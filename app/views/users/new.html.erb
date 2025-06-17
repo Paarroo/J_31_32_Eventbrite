@@ -1,0 +1,35 @@
+<section class="section">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-6">
+        <!-- Back Button -->
+        <div class="mb-6">
+          <%= link_to users_path, class: "button is-light" do %>
+            <span class="icon">
+              <i class="fas fa-arrow-left"></i>
+            </span>
+            <span>Retour aux utilisateurs</span>
+          <% end %>
+        </div>
+
+        <!-- Form Container -->
+        <div class="card">
+          <header class="card-header">
+            <div class="card-header-title is-centered">
+              <div class="has-text-centered">
+                <h1 class="title is-3">Nouvel utilisateur</h1>
+                <p class="subtitle is-6 has-text-grey">
+                  Créer un nouveau compte utilisateur
+                </p>
+              </div>
+            </div>
+          </header>
+
+          <div class="card-content">
+            <%= render "form", user: @user %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

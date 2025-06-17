@@ -1,0 +1,127 @@
+<section class="section">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-6">
+        <!-- Back Button -->
+        <div class="mb-6">
+          <%= link_to user_path(@user), class: "button is-light" do %>
+            <span class="icon">
+              <i class="fas fa-arrow-left"></i>
+            </span>
+            <span>Retour au profil</span>
+          <% end %>
+        </div>
+
+        <!-- Form Container -->
+        <div class="card">
+          <header class="card-header">
+            <div class="card-header-title" style="justify-content: center; flex-direction: column; text-align: center;">
+              <h1 class="title is-2" style="margin-bottom: 1rem !important; font-size: 2.5rem !important;">
+                Modifier mon profil
+              </h1>
+              <p class="subtitle is-6 has-text-grey" style="margin-bottom: 0;">
+                Mettez à jour vos informations personnelles
+              </p>
+            </div>
+          </header>
+
+          <div class="card-content">
+            <%= form_with(model: @user, local: true) do |form| %>
+              <!-- Error Messages -->
+              <% if @user.errors.any? %>
+                <div class="notification is-danger mb-6">
+                  <button class="delete"></button>
+                  <p class="has-text-weight-bold mb-3">
+                    <%= pluralize(@user.errors.count, "erreur") %> à corriger :
+                  </p>
+                  <ul>
+                    <% @user.errors.full_messages.each do |message| %>
+                      <li class="mb-1">• <%= message %></li>
+                    <% end %>
+                  </ul>
+                </div>
+              <% end %>
+
+              <!-- Profile Fields -->
+              <div class="mb-6">
+                <h3 class="title is-5 mb-4">
+                  <span class="icon">
+                    <i class="fas fa-user"></i>
+                  </span>
+                  Informations personnelles
+                </h3>
+
+                <div class="columns">
+                  <div class="column">
+                    <div class="field">
+                      <%= form.label :first_name, "Prénom", class: "label" %>
+                      <div class="control">
+                        <%= form.text_field :first_name,
+                            class: "input",
+                            placeholder: "Votre prénom" %>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="column">
+                    <div class="field">
+                      <%= form.label :last_name, "Nom", class: "label" %>
+                      <div class="control">
+                        <%= form.text_field :last_name,
+                            class: "input",
+                            placeholder: "Votre nom" %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="field">
+                  <%= form.label :description, "Description", class: "label" %>
+                  <div class="control">
+                    <%= form.text_area :description,
+                        rows: 4,
+                        class: "textarea",
+                        placeholder: "Parlez-nous de vous, vos passions, vos centres d'intérêt..." %>
+                  </div>
+                  <p class="help has-text-grey">
+                    Cette description apparaîtra sur votre profil public
+                  </p>
+                </div>
+              </div>
+
+              <!-- Form Actions -->
+              <div class="field is-grouped is-grouped-centered">
+                <div class="control">
+                  <%= form.submit "Sauvegarder les modifications",
+                      class: "button is-primary is-medium" %>
+                </div>
+                <div class="control">
+                  <%= link_to user_path(@user),
+                      class: "button is-light is-medium" do %>
+                    Annuler
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Additional Settings -->
+        <div class="card mt-6">
+          <header class="card-header">
+            <div class="card-header-title" style="justify-content: center;">
+              <h3 class="title is-5">Paramètres du compte</h3>
+            </div>
+          </header>
+          <div class="card-content has-text-centered">
+            <p class="has-text-grey mb-4">
+              Pour modifier votre email ou mot de passe, utilisez les paramètres de compte.
+            </p>
+            <%= link_to "Paramètres de sécurité", edit_user_registration_path,
+                class: "button is-info" %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

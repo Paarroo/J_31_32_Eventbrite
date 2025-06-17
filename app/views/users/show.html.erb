@@ -1,0 +1,325 @@
+<section class="section">
+  <div class="container">
+    <!-- User Profile Card -->
+    <div class="card mb-6">
+      <div class="card-content has-text-centered">
+        <figure class="image is-128x128 is-inline-block mb-4">
+          <span class="has-background-primary has-text-white is-flex is-align-items-center is-justify-content-center"
+                style="width: 128px; height: 128px; border-radius: 50%; font-size: 48px; font-weight: bold;">
+            <%= @user.first_name&.first&.upcase || "U" %>
+          </span>
+        </figure>
+
+        <h1 class="title is-3 mb-5">
+          <%= @user.first_name %> <%= @user.last_name %>
+        </h1>
+
+        <p class="subtitle is-5 has-text-grey mb-4">
+          <%= @user.email %>
+        </p>
+
+        <% if @user.description.present? %>
+          <div class="content">
+            <p><%= @user.description %></p>
+          </div>
+        <% end %>
+
+        <!-- Profile Actions (si propriétaire) -->
+        <% if current_user == @user %>
+          <div class="field is-grouped is-grouped-centered mt-5">
+            <%= link_to "Modifier mon profil", edit_user_path(@user),
+                class: "button is-primary" %>
+            <%= link_to "Paramètres", edit_user_registration_path,
+                class: "button is-light" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="columns">
+      <!-- Main Content -->
+      <div class="column is-8">
+        <!-- Événements créés -->
+        <div class="card mb-6">
+          <header class="card-header">
+            <div class="card-header-title is-flex is-justify-content-space-between" style="width: 100%;">
+              <div>
+                <span class="title is-5">Événements créés</span>
+                <span class="tag is-primary ml-2"><%= @user.events.count %></span>
+              </div>
+              <% if current_user == @user %>
+                <%= link_to "Créer un événement", new_event_path,
+                    class: "button is-primary is-small" %>
+              <% end %>
+            </div>
+          </header>
+
+          <div class="card-content">
+            <% if @user.events.any? %>
+              <% @user.events.each do |event| %>
+                <div class="box">
+                  <div class="level">
+                    <div class="level-left">
+                      <div>
+                        <h4 class="title is-5 mb-2">
+                          <%= link_to event.title, event_path(event),
+                              class: "has-text-primary" %>
+                        </h4>
+                        <div class="tags">
+                          <span class="tag is-info is-light">
+                            <span class="icon is-small">
+                              <i class="fas fa-calendar"></i>
+                            </span>
+                            <span><%= event.start_date.strftime("%d %b %Y") %></span>
+                          </span>
+                          <span class="tag is-light">
+                            <span class="icon is-small">
+                              <i class="fas fa-map-marker-alt"></i>
+                            </span>
+                            <span><%= event.location %></span>
+                          </span>
+                          <span class="tag is-success is-light">
+                            <span class="icon is-small">
+                              <i class="fas fa-users"></i>
+                            </span>
+                            <span><%= pluralize(event.participants_count, 'participant') %></span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="level-right">
+                      <div class="has-text-right">
+                        <div class="title is-4 has-text-success mb-2">
+                          <%= event.price %>€
+                        </div>
+                        <% if current_user == @user %>
+                          <div class="field is-grouped">
+                            <%= link_to "Modifier", edit_event_path(event),
+                                class: "button is-small is-light" %>
+                            <%= link_to "Participants", event_participants_path(event),
+                                class: "button is-small is-primary" %>
+                          </div>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            <% else %>
+              <div class="has-text-centered py-6">
+                <span class="icon is-large has-text-grey-light mb-4">
+                  <i class="fas fa-calendar-plus fa-3x"></i>
+                </span>
+                <h3 class="title is-5 has-text-grey">
+                  <%= current_user == @user ? "Vous n'avez" : "#{@user.first_name} n'a" %>
+                  créé aucun événement
+                </h3>
+                <% if current_user == @user %>
+                  <p class="has-text-grey mb-4">
+                    Créez votre premier événement et commencez à rassembler votre communauté !
+                  </p>
+                  <%= link_to "Créer mon premier événement", new_event_path,
+                      class: "button is-primary" %>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Participations -->
+        <div class="card">
+          <header class="card-header">
+            <div class="card-header-title">
+              <span class="title is-5">Participations</span>
+              <span class="tag is-info ml-2"><%= @user.attendances.count %></span>
+            </div>
+          </header>
+
+          <div class="card-content">
+            <% if @user.attendances.any? %>
+              <% @user.attendances.includes(:event).each do |attendance| %>
+                <% event = attendance.event %>
+                <div class="box">
+                  <div class="level">
+                    <div class="level-left">
+                      <div>
+                        <h4 class="title is-5 mb-2">
+                          <%= link_to event.title, event_path(event),
+                              class: "has-text-primary" %>
+                        </h4>
+                        <div class="tags">
+                          <span class="tag is-info is-light">
+                            <span class="icon is-small">
+                              <i class="fas fa-calendar"></i>
+                            </span>
+                            <span><%= event.start_date.strftime("%d %b %Y") %></span>
+                          </span>
+                          <span class="tag is-light">
+                            <span class="icon is-small">
+                              <i class="fas fa-map-marker-alt"></i>
+                            </span>
+                            <span><%= event.location %></span>
+                          </span>
+                          <span class="tag is-warning is-light">
+                            <span class="icon is-small">
+                              <i class="fas fa-user"></i>
+                            </span>
+                            <span>par <%= event.user.first_name %></span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="level-right">
+                      <div class="has-text-right">
+                        <div class="title is-5 has-text-success mb-1">
+                          <%= event.price %>€
+                        </div>
+                        <p class="is-size-7 has-text-grey">
+                          Inscrit le <%= attendance.created_at.strftime("%d/%m/%Y") %>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            <% else %>
+              <div class="has-text-centered py-6">
+                <span class="icon is-large has-text-grey-light mb-4">
+                  <i class="fas fa-ticket-alt fa-3x"></i>
+                </span>
+                <h3 class="title is-5 has-text-grey">
+                  <%= current_user == @user ? "Vous ne participez" : "#{@user.first_name} ne participe" %>
+                  à aucun événement
+                </h3>
+                <% if current_user == @user %>
+                  <p class="has-text-grey mb-4">
+                    Découvrez des événements passionnants près de chez vous !
+                  </p>
+                  <%= link_to "Découvrir les événements", events_path,
+                      class: "button is-primary" %>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="column is-4">
+        <!-- User Stats -->
+        <div class="card mb-6">
+          <header class="card-header">
+            <div class="card-header-title">
+              <span class="title is-5">Statistiques</span>
+            </div>
+          </header>
+          <div class="card-content has-text-centered">
+            <div class="columns">
+              <div class="column">
+                <div class="title is-3 has-text-primary mb-1">
+                  <%= @user.events.count %>
+                </div>
+                <div class="is-size-7 has-text-grey">
+                  Événement<%= 's' if @user.events.count > 1 %><br>créé<%= 's' if @user.events.count > 1 %>
+                </div>
+              </div>
+
+              <div class="column">
+                <div class="title is-3 has-text-info mb-1">
+                  <%= @user.attendances.count %>
+                </div>
+                <div class="is-size-7 has-text-grey">
+                  Participation<%= 's' if @user.attendances.count > 1 %>
+                </div>
+              </div>
+            </div>
+
+            <hr>
+
+            <div>
+              <div class="title is-3 has-text-success mb-1">
+                <%= @user.events.joins(:participants).distinct.count %>
+              </div>
+              <div class="is-size-7 has-text-grey">
+                Personnes touchées
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <% if current_user == @user %>
+          <div class="card mb-6">
+            <header class="card-header">
+              <div class="card-header-title">
+                <span class="title is-5">Actions rapides</span>
+              </div>
+            </header>
+            <div class="card-content">
+              <div class="buttons">
+                <%= link_to new_event_path, class: "button is-primary is-fullwidth mb-3" do %>
+                  <span class="icon">
+                    <i class="fas fa-plus"></i>
+                  </span>
+                  <span>Créer un événement</span>
+                <% end %>
+
+                <%= link_to events_path, class: "button is-light is-fullwidth mb-3" do %>
+                  <span class="icon">
+                    <i class="fas fa-search"></i>
+                  </span>
+                  <span>Découvrir des événements</span>
+                <% end %>
+
+                <%= link_to edit_user_path(@user), class: "button is-light is-fullwidth" do %>
+                  <span class="icon">
+                    <i class="fas fa-edit"></i>
+                  </span>
+                  <span>Modifier mon profil</span>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+
+        <!-- Contact Info -->
+        <div class="card">
+          <header class="card-header">
+            <div class="card-header-title">
+              <span class="title is-5">Contact</span>
+            </div>
+          </header>
+          <div class="card-content">
+            <div class="field">
+              <div class="is-flex is-align-items-center">
+                <span class="icon has-text-grey mr-3">
+                  <i class="fas fa-envelope"></i>
+                </span>
+                <div>
+                  <div class="is-size-7 has-text-weight-semibold">Email</div>
+                  <div class="is-size-7"><%= @user.email %></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="field">
+              <div class="is-flex is-align-items-center">
+                <span class="icon has-text-grey mr-3">
+                  <i class="fas fa-calendar-check"></i>
+                </span>
+                <div>
+                  <div class="is-size-7 has-text-weight-semibold">Membre depuis</div>
+                  <div class="is-size-7">
+                    <%= @user.created_at.strftime("%B %Y") %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,42 @@
+<div id="<%= dom_id user %>">
+  <div class="box">
+    <div class="media">
+      <div class="media-left">
+        <figure class="image is-64x64">
+          <span class="has-background-primary has-text-white is-flex is-align-items-center is-justify-content-center"
+                style="width: 64px; height: 64px; border-radius: 50%; font-size: 24px; font-weight: bold;">
+            <%= user.first_name&.first&.upcase || "U" %>
+          </span>
+        </figure>
+      </div>
+      <div class="media-content">
+        <div class="content">
+          <p>
+            <strong class="title is-5"><%= user.first_name %> <%= user.last_name %></strong>
+            <br>
+            <span class="has-text-grey"><%= user.email %></span>
+          </p>
+
+          <% if user.description.present? %>
+            <p class="mt-2"><%= user.description %></p>
+          <% end %>
+
+          <div class="tags mt-3">
+            <span class="tag is-info is-light">
+              <span class="icon is-small">
+                <i class="fas fa-calendar"></i>
+              </span>
+              <span><%= pluralize(user.events.count, 'événement') %></span>
+            </span>
+            <span class="tag is-success is-light">
+              <span class="icon is-small">
+                <i class="fas fa-ticket-alt"></i>
+              </span>
+              <span><%= pluralize(user.attendances.count, 'participation') %></span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

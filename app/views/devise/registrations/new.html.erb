@@ -1,0 +1,135 @@
+<section class="section">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-5">
+        <div class="card">
+          <header class="card-header has-background-primary">
+            <div class="card-header-title is-centered">
+              <h1 class="title is-4 has-text-white">
+                <span class="icon mr-3">
+                  <i class="fas fa-user-plus"></i>
+                </span>
+                Inscription
+              </h1>
+            </div>
+          </header>
+
+          <div class="card-content">
+            <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+              <!-- Messages d'erreur -->
+              <% if resource.errors.any? %>
+                <div class="notification is-danger">
+                  <button class="delete"></button>
+                  <p class="has-text-weight-bold mb-3">
+                    <%= pluralize(resource.errors.count, "erreur") %> à corriger :
+                  </p>
+                  <ul>
+                    <% resource.errors.full_messages.each do |message| %>
+                      <li>• <%= message %></li>
+                    <% end %>
+                  </ul>
+                </div>
+              <% end %>
+
+              <!-- Prénom et Nom -->
+              <div class="columns">
+                <div class="column">
+                  <div class="field">
+                    <%= f.label :first_name, "Prénom", class: "label" %>
+                    <div class="control has-icons-left">
+                      <%= f.text_field :first_name, autofocus: true, autocomplete: "given-name",
+                          class: "input", placeholder: "Votre prénom", required: true %>
+                      <span class="icon is-small is-left">
+                        <i class="fas fa-user"></i>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="column">
+                  <div class="field">
+                    <%= f.label :last_name, "Nom", class: "label" %>
+                    <div class="control has-icons-left">
+                      <%= f.text_field :last_name, autocomplete: "family-name",
+                          class: "input", placeholder: "Votre nom", required: true %>
+                      <span class="icon is-small is-left">
+                        <i class="fas fa-user"></i>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Email -->
+              <div class="field">
+                <%= f.label :email, "Email", class: "label" %>
+                <div class="control has-icons-left">
+                  <%= f.email_field :email, autocomplete: "email",
+                      class: "input", placeholder: "votre@email.com", required: true %>
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-envelope"></i>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Description -->
+              <div class="field">
+                <%= f.label :description, "Description (optionnel)", class: "label" %>
+                <div class="control">
+                  <%= f.text_area :description, class: "textarea", rows: 3,
+                      placeholder: "Parlez-nous un peu de vous..." %>
+                </div>
+                <p class="help">Cette description apparaîtra sur votre profil</p>
+              </div>
+
+              <!-- Mot de passe -->
+              <div class="field">
+                <%= f.label :password, "Mot de passe", class: "label" %>
+                <div class="control has-icons-left">
+                  <%= f.password_field :password, autocomplete: "new-password",
+                      class: "input", placeholder: "••••••••", required: true %>
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-lock"></i>
+                  </span>
+                </div>
+                <% if @minimum_password_length %>
+                  <p class="help">Minimum <%= @minimum_password_length %> caractères</p>
+                <% end %>
+              </div>
+
+              <!-- Confirmation mot de passe -->
+              <div class="field">
+                <%= f.label :password_confirmation, "Confirmer le mot de passe", class: "label" %>
+                <div class="control has-icons-left">
+                  <%= f.password_field :password_confirmation, autocomplete: "new-password",
+                      class: "input", placeholder: "••••••••", required: true %>
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-lock"></i>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Bouton d'inscription -->
+              <div class="field">
+                <div class="control">
+                  <%= f.submit "S'inscrire", class: "button is-primary is-fullwidth is-medium" %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+
+          <footer class="card-footer">
+            <div class="card-footer-item">
+              <div class="content has-text-centered">
+                <p>
+                  Déjà un compte ?
+                  <%= link_to "Se connecter", new_session_path(resource_name), class: "has-text-primary has-text-weight-semibold" %>
+                </p>
+              </div>
+            </div>
+          </footer>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

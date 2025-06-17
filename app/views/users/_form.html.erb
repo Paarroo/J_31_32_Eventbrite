@@ -1,0 +1,63 @@
+<%= form_with(model: user, local: true) do |form| %>
+  <% if user.errors.any? %>
+    <div class="notification is-danger">
+      <button class="delete"></button>
+      <p class="has-text-weight-bold">
+        <%= pluralize(user.errors.count, "erreur") %> à corriger :
+      </p>
+      <ul class="mt-2">
+        <% user.errors.full_messages.each do |message| %>
+          <li>• <%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="columns">
+    <div class="column is-6">
+      <div class="field">
+        <%= form.label :first_name, "Prénom", class: "label" %>
+        <div class="control">
+          <%= form.text_field :first_name, class: "input", placeholder: "Votre prénom" %>
+        </div>
+      </div>
+    </div>
+
+    <div class="column is-6">
+      <div class="field">
+        <%= form.label :last_name, "Nom", class: "label" %>
+        <div class="control">
+          <%= form.text_field :last_name, class: "input", placeholder: "Votre nom" %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="field">
+    <%= form.label :description, "Description", class: "label" %>
+    <div class="control">
+      <%= form.text_area :description, class: "textarea", rows: 4,
+          placeholder: "Parlez-nous de vous, vos passions, vos centres d'intérêt..." %>
+    </div>
+    <p class="help">Cette description apparaîtra sur votre profil public</p>
+  </div>
+
+  <div class="field">
+    <%= form.label :email, "Email", class: "label" %>
+    <div class="control has-icons-left">
+      <%= form.email_field :email, class: "input", placeholder: "votre@email.com" %>
+      <span class="icon is-left">
+        <i class="fas fa-envelope"></i>
+      </span>
+    </div>
+  </div>
+
+  <div class="field is-grouped">
+    <div class="control">
+      <%= form.submit "Sauvegarder", class: "button is-primary" %>
+    </div>
+    <div class="control">
+      <%= link_to "Annuler", user_path(user), class: "button is-light" %>
+    </div>
+  </div>
+<% end %>

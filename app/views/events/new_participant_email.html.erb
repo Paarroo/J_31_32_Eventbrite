@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <h1>Nouvelle inscription à votre événement !</h1>
+    <p>Bonjour <%= @event_creator.first_name %>,</p>
+    <p>
+      <strong><%= @user.first_name %> <%= @user.last_name %></strong>
+      vient de s'inscrire à votre événement
+      <strong><%= @event.title %></strong>.
+    </p>
+    <p>Détails de l'événement :</p>
+    <ul>
+      <li>Date : <%= @event.start_date.strftime("%d/%m/%Y à %H:%M") %></li>
+      <li>Lieu : <%= @event.location %></li>
+      <li>Nombre total de participants : <%= @event.participants_count %></li>
+    </ul>
+  </body>
+</html>

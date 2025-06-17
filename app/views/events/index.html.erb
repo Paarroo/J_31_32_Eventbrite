@@ -1,0 +1,184 @@
+<!-- Events Section (sans hero) -->
+<section class="section" id="events-section">
+  <div class="container">
+    <!-- Header simple en blocs -->
+    <div class="has-text-centered mb-6">
+      <h1 class="title is-2 mb-5">Tous les événements</h1>
+      <p class="subtitle mb-5">Découvrez une sélection d'événements passionnants près de chez vous</p>
+
+      <% if user_signed_in? %>
+        <%= link_to new_event_path, class: "button is-primary is-medium" do %>
+          <span class="icon">
+            <i class="fas fa-plus"></i>
+          </span>
+          <span>Créer un événement</span>
+        <% end %>
+      <% end %>
+    </div>
+
+    <% if @events.any? %>
+      <div class="columns is-multiline">
+        <% @events.each do |event| %>
+          <div class="column is-4">
+            <%= link_to event_path(event), class: "event-card-link" do %>
+              <div class="card event-card">
+                <!-- Date Badge -->
+                <div class="card-header">
+                  <div class="card-header-title is-justify-content-space-between">
+                    <div class="date-badge">
+                      <span class="tag is-primary is-large">
+                        <span class="icon">
+                          <i class="fas fa-calendar-alt"></i>
+                        </span>
+                        <span><%= event.start_date.strftime("%d %b") %></span>
+                      </span>
+                    </div>
+                    <div class="price-badge">
+                      <span class="tag is-success is-large has-text-weight-bold">
+                        <%= event.price %>€
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="card-content">
+                  <!-- Event Title -->
+                  <h3 class="title is-4 mb-3 has-text-dark">
+                    <%= event.title %>
+                  </h3>
+
+                  <!-- Event Description -->
+                  <div class="content">
+                    <p class="has-text-grey-dark" style="word-break: break-word; overflow-wrap: break-word;">
+                      <%= truncate(event.description, length: 80, separator: ' ') %>
+                    </p>
+                  </div>
+
+                  <!-- Event Meta Info -->
+                  <div class="event-meta">
+                    <div class="level is-mobile">
+                      <div class="level-left">
+                        <div class="level-item">
+                          <span class="icon-text">
+                            <span class="icon has-text-grey">
+                              <i class="fas fa-clock"></i>
+                            </span>
+                            <span class="has-text-grey-dark">
+                              <%= event.start_date.strftime("%H:%M") %>
+                            </span>
+                          </span>
+                        </div>
+                      </div>
+                      <div class="level-right">
+                        <div class="level-item">
+                          <span class="icon-text">
+                            <span class="icon has-text-grey">
+                              <i class="fas fa-users"></i>
+                            </span>
+                            <span class="has-text-grey-dark">
+                              <%= event.participants_count %> participant<%= 's' if event.participants_count > 1 %>
+                            </span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="level is-mobile mt-2">
+                      <div class="level-left">
+                        <div class="level-item">
+                          <span class="icon-text">
+                            <span class="icon has-text-grey">
+                              <i class="fas fa-map-marker-alt"></i>
+                            </span>
+                            <span class="has-text-grey-dark">
+                              <%= truncate(event.location, length: 25) %>
+                            </span>
+                          </span>
+                        </div>
+                      </div>
+                      <div class="level-right">
+                        <div class="level-item">
+                          <span class="icon-text">
+                            <span class="icon has-text-grey">
+                              <i class="fas fa-user"></i>
+                            </span>
+                            <span class="has-text-grey-dark">
+                              par <%= event.user.first_name %>
+                            </span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Footer avec indicateur visuel -->
+                <footer class="card-footer">
+                  <div class="card-footer-item has-text-primary has-text-weight-semibold">
+                    <span class="icon">
+                      <i class="fas fa-eye"></i>
+                    </span>
+                    <span>Cliquez pour voir les détails</span>
+                  </div>
+                </footer>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+
+      <!-- Pagination ou Load More -->
+      <div class="has-text-centered mt-6">
+        <% if @events.count >= 6 %>
+          <button class="button is-primary is-outlined is-medium">
+            <span class="icon">
+              <i class="fas fa-plus"></i>
+            </span>
+            <span>Voir plus d'événements</span>
+          </button>
+        <% end %>
+      </div>
+
+    <% else %>
+      <!-- Empty State -->
+      <div class="has-text-centered py-6">
+        <div class="empty-state">
+          <span class="icon is-large has-text-grey-light mb-4">
+            <i class="fas fa-calendar-plus fa-3x"></i>
+          </span>
+          <h3 class="title is-4 has-text-grey">Aucun événement disponible</h3>
+          <p class="subtitle has-text-grey">
+            Soyez le premier à créer un événement passionnant !
+          </p>
+          <% if user_signed_in? %>
+            <%= link_to "Créer le premier événement", new_event_path,
+                class: "button is-primary is-medium mt-4" %>
+          <% else %>
+            <%= link_to "Rejoindre Eventbrite", new_user_registration_path,
+                class: "button is-primary is-medium mt-4" %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</section>
+
+<!-- Call to Action Section pour les non-connectés -->
+<% unless user_signed_in? %>
+  <section class="section has-background-light">
+    <div class="container">
+      <div class="has-text-centered">
+        <h2 class="title is-3">Prêt à créer votre propre événement ?</h2>
+        <p class="subtitle is-5 mb-5">
+          Rejoignez des milliers d'organisateurs qui font confiance à Eventbrite
+        </p>
+        <div class="buttons is-centered">
+          <%= link_to "S'inscrire gratuitement", new_user_registration_path,
+              class: "button is-primary is-medium" %>
+          <%= link_to "En savoir plus", root_path,
+              class: "button is-light is-medium" %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

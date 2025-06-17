@@ -1,0 +1,80 @@
+<section class="section">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-4">
+        <div class="card">
+          <header class="card-header has-background-warning">
+            <div class="card-header-title is-centered">
+              <h1 class="title is-4 has-text-white">
+                <span class="icon mr-3">
+                  <i class="fas fa-key"></i>
+                </span>
+                Mot de passe oublié
+              </h1>
+            </div>
+          </header>
+
+          <div class="card-content">
+            <div class="content has-text-centered mb-4">
+              <p class="has-text-grey">
+                Entrez votre adresse email et nous vous enverrons un lien pour réinitialiser votre mot de passe.
+              </p>
+            </div>
+
+            <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
+              <!-- Messages d'erreur -->
+              <% if resource.errors.any? %>
+                <div class="notification is-danger">
+                  <button class="delete"></button>
+                  <p class="has-text-weight-bold mb-3">
+                    <%= pluralize(resource.errors.count, "erreur") %> :
+                  </p>
+                  <ul>
+                    <% resource.errors.full_messages.each do |message| %>
+                      <li>• <%= message %></li>
+                    <% end %>
+                  </ul>
+                </div>
+              <% end %>
+
+              <!-- Email -->
+              <div class="field">
+                <%= f.label :email, "Adresse email", class: "label" %>
+                <div class="control has-icons-left">
+                  <%= f.email_field :email, autofocus: true, autocomplete: "email",
+                      class: "input is-medium", placeholder: "votre@email.com", required: true %>
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-envelope"></i>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Bouton d'envoi -->
+              <div class="field">
+                <div class="control">
+                  <%= f.submit "Envoyer les instructions", class: "button is-warning is-fullwidth is-medium" %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+
+          <footer class="card-footer">
+            <div class="card-footer-item">
+              <div class="content has-text-centered">
+                <p class="mb-2">
+                  <%= link_to "Retour à la connexion", new_session_path(resource_name),
+                      class: "has-text-primary has-text-weight-semibold" %>
+                </p>
+                <p>
+                  Pas encore de compte ?
+                  <%= link_to "S'inscrire", new_registration_path(resource_name),
+                      class: "has-text-info" %>
+                </p>
+              </div>
+            </div>
+          </footer>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

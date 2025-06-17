@@ -1,0 +1,614 @@
+/*
+ * This is a manifest file that'll be compiled into application.css.
+ *
+ * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
+ * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
+ * cascading order, meaning styles declared later in the document or manifest will override earlier ones,
+ * depending on specificity.
+ *
+ * Consider organizing styles into separate files for maintainability.
+ */
+
+/* Alternative : Navbar avec couleur Eventbrite mais plus foncée */
+
+/*
+ *= require_tree .
+ *= require_self
+ */
+
+/* Import Bulma */
+@import "https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css";
+
+/* Variables personnalisées Eventbrite */
+:root {
+  --eventbrite-primary: #f05537;
+  --eventbrite-secondary: #3659e3;
+  --eventbrite-success: #39d87a;
+  --eventbrite-warning: #ffb300;
+  --eventbrite-danger: #f93154;
+  --navbar-dark: #2c3e50;
+}
+
+/* Override des couleurs Bulma */
+.has-background-primary {
+  background-color: var(--eventbrite-primary) !important;
+}
+
+.has-text-primary {
+  color: var(--eventbrite-primary) !important;
+}
+
+.button.is-primary {
+  background-color: var(--eventbrite-primary);
+  border-color: var(--eventbrite-primary);
+}
+
+.button.is-primary:hover {
+  background-color: #e04a2f;
+  border-color: #e04a2f;
+}
+
+.tag.is-primary {
+  background-color: var(--eventbrite-primary);
+  color: white;
+}
+
+/* Navbar avec background plus foncé et visible */
+.navbar.is-primary {
+  background-color: var(--navbar-dark) !important;
+  background: linear-gradient(90deg, var(--navbar-dark) 0%, #34495e 100%) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.navbar.is-primary .navbar-brand .navbar-item {
+  color: white !important;
+}
+
+.navbar.is-primary .navbar-item {
+  color: white !important;
+}
+
+.navbar.is-primary .navbar-item:hover,
+.navbar.is-primary .navbar-item.is-active {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: white !important;
+}
+
+.navbar.is-primary .navbar-link {
+  color: white !important;
+}
+
+.navbar.is-primary .navbar-link:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: white !important;
+}
+
+.navbar.is-primary .navbar-dropdown {
+  background-color: white;
+  border-top: 2px solid var(--eventbrite-primary);
+}
+
+.navbar.is-primary .navbar-dropdown .navbar-item {
+  color: #363636 !important;
+}
+
+.navbar.is-primary .navbar-dropdown .navbar-item:hover {
+  background-color: #f5f5f5 !important;
+  color: var(--eventbrite-primary) !important;
+}
+
+/* Styles personnalisés */
+.navbar-item.is-active {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.hero.is-primary {
+  background: linear-gradient(
+    135deg,
+    var(--eventbrite-primary) 0%,
+    var(--eventbrite-secondary) 100%
+  );
+}
+
+/* Notifications flash auto-dismiss */
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  max-width: 400px;
+  animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Avatar personnalisés */
+.avatar-circle {
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: white;
+}
+
+/* Amélioration des formulaires */
+.field.has-addons .control .input,
+.field.has-addons .control .select select {
+  border-radius: 4px 0 0 4px;
+}
+
+.field.has-addons .control:last-child .input,
+.field.has-addons .control:last-child .select select,
+.field.has-addons .control:last-child .button {
+  border-radius: 0 4px 4px 0;
+}
+
+/* Responsive improvements */
+@media screen and (max-width: 768px) {
+  .level {
+    flex-direction: column;
+  }
+
+  .level .level-left,
+  .level .level-right {
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+
+  .card .level {
+    flex-direction: column;
+  }
+
+  .notification {
+    position: relative;
+    top: auto;
+    right: auto;
+    margin-bottom: 1rem;
+  }
+}
+
+/* States des boutons */
+.button.is-loading::after {
+  border-color: transparent transparent #fff #fff !important;
+}
+
+/* Améliorations des tags */
+.tags .tag {
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Footer amélioré */
+.footer {
+  margin-top: 3rem;
+}
+
+.footer .title {
+  margin-bottom: 1rem;
+}
+
+.footer ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer ul li {
+  margin-bottom: 0.5rem;
+}
+
+.footer ul li a {
+  transition: all 0.3s ease;
+  display: inline-block;
+  padding: 0.5rem 0;
+  border-radius: 4px;
+}
+
+.footer ul li a:hover {
+  color: white !important;
+  transform: translateX(5px);
+}
+
+.footer ul li a:hover .icon {
+  color: var(--eventbrite-primary) !important;
+}
+
+/* Amélioration des boutons sociaux */
+.footer .button.is-dark {
+  transition: all 0.3s ease;
+}
+
+.footer .button.is-dark:hover {
+  background-color: var(--eventbrite-primary) !important;
+  border-color: var(--eventbrite-primary) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Cards améliorées */
+.card-header-title {
+  font-weight: 600;
+}
+
+.card-content .content:last-child {
+  margin-bottom: 0;
+}
+
+/* Styles spécifiques pour les cartes d'événements - CLIQUABLES */
+.event-card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.event-card-link:hover {
+  text-decoration: none;
+  color: inherit;
+}
+
+.event-card {
+  height: 100%;
+  transition: all 0.3s ease;
+  border: 1px solid #e8e8e8;
+  overflow: hidden;
+  cursor: pointer; /* Indique que c'est cliquable */
+}
+
+.event-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  border-color: var(--eventbrite-primary);
+}
+
+/* Titre non cliquable séparément maintenant */
+.event-card .title {
+  color: #363636 !important;
+  transition: color 0.3s ease;
+}
+
+.event-card:hover .title {
+  color: var(--eventbrite-primary) !important;
+}
+
+/* Footer amélioré */
+.event-card .card-footer-item {
+  transition: all 0.3s ease;
+  border: none !important;
+  background-color: #f8f9fa;
+}
+
+.event-card:hover .card-footer-item {
+  background-color: var(--eventbrite-primary);
+  color: white !important;
+}
+
+.event-card:hover .card-footer-item .icon {
+  color: white !important;
+}
+
+.event-meta {
+  border-top: 1px solid #f5f5f5;
+  padding-top: 1rem;
+  margin-top: 1rem;
+}
+
+.date-badge .tag {
+  font-size: 0.9rem;
+}
+
+.price-badge .tag {
+  font-size: 1.1rem;
+}
+
+/* CORRECTION IMPORTANTE : Empêcher le débordement de texte */
+.event-card .card-content {
+  overflow: hidden;
+}
+
+.event-card .card-content .content {
+  overflow: hidden;
+}
+
+.event-card .card-content .content p {
+  word-wrap: break-word !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  hyphens: auto;
+  line-height: 1.4;
+  max-width: 100%;
+}
+
+.event-card .title {
+  word-wrap: break-word !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  hyphens: auto;
+  line-height: 1.2;
+}
+
+/* Limitation de hauteur pour les descriptions */
+.event-card .content p {
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Limite à 3 lignes */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Métadonnées des événements */
+.event-meta .icon-text {
+  flex-wrap: wrap;
+}
+
+.event-meta .icon-text span:last-child {
+  word-break: break-word;
+  max-width: calc(100% - 1.5rem); /* Espace pour l'icône */
+}
+
+/* Hero amélioré */
+.hero.is-primary {
+  background: linear-gradient(
+    135deg,
+    var(--eventbrite-primary) 0%,
+    var(--eventbrite-secondary) 100%
+  );
+  position: relative;
+  overflow: hidden;
+}
+
+.hero.is-primary::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.05)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.hero .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* Buttons améliorés */
+.button.is-white {
+  border: 2px solid white;
+  transition: all 0.3s ease;
+}
+
+.button.is-white:hover {
+  background-color: transparent !important;
+  color: white !important;
+  border-color: white;
+}
+
+.button.is-light.is-outlined {
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  background-color: transparent;
+  color: white;
+}
+
+.button.is-light.is-outlined:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border-color: white;
+  color: white !important;
+}
+
+/* Stats box dans le hero */
+.hero .box {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Icon-text spacing */
+.icon-text .icon {
+  margin-right: 0.5rem;
+}
+
+/* Card footer amélioration */
+.card-footer-item {
+  transition: all 0.3s ease;
+  border: none !important;
+}
+
+.card-footer-item:hover {
+  background-color: #f8f9fa;
+  transform: translateY(-1px);
+}
+
+/* Empty state */
+.empty-state {
+  padding: 4rem 2rem;
+}
+
+.empty-state .icon {
+  margin-bottom: 2rem;
+}
+
+/* Level responsive fix - AMÉLIORÉ */
+@media screen and (max-width: 768px) {
+  .level.is-mobile {
+    display: flex !important;
+  }
+
+  .event-card {
+    margin-bottom: 2rem;
+  }
+
+  .hero .columns {
+    text-align: center;
+  }
+
+  /* Stats box responsive */
+  .hero .box .columns.is-mobile {
+    flex-direction: column;
+  }
+
+  .hero .box .column {
+    padding: 0.5rem;
+  }
+
+  .hero .box .title {
+    font-size: 2.5rem !important;
+  }
+
+  .hero .box .subtitle {
+    font-size: 0.8rem !important;
+  }
+
+  /* Hero responsive */
+  .hero .title.is-1 {
+    font-size: 2.5rem !important;
+  }
+
+  .hero .subtitle.is-4 {
+    font-size: 1.2rem !important;
+  }
+
+  /* Section header responsive */
+  .level {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .level-left,
+  .level-right {
+    text-align: center !important;
+    margin-bottom: 1rem;
+  }
+
+  .level-right {
+    margin-bottom: 0;
+  }
+
+  /* Flexbox helper pour mobile */
+  .is-flex-wrap-wrap {
+    flex-wrap: wrap;
+  }
+
+  .mb-4-mobile {
+    margin-bottom: 1.5rem !important;
+  }
+}
+
+@media screen and (max-width: 1024px) and (min-width: 769px) {
+  /* Tablet fix */
+  .level {
+    flex-wrap: wrap;
+  }
+
+  .level-left {
+    flex: 1;
+    min-width: 60%;
+  }
+
+  .level-right {
+    flex: 0 0 auto;
+    min-width: 35%;
+    text-align: right;
+  }
+}
+
+/* Navbar dropdown amélioré */
+.navbar-dropdown {
+  border-top: 2px solid var(--eventbrite-primary);
+}
+
+.navbar-dropdown .navbar-item:hover {
+  background-color: #f5f5f5;
+  color: var(--eventbrite-primary);
+}
+
+/* Animation des éléments */
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Styles pour les états vides */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.empty-state .icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+/* Améliorations de l'accessibilité */
+.button:focus,
+.input:focus,
+.textarea:focus,
+.select select:focus {
+  box-shadow: 0 0 0 0.125em rgba(240, 85, 55, 0.25);
+}
+
+/* Loading states */
+.is-loading {
+  position: relative;
+  pointer-events: none;
+}
+
+.is-loading::after {
+  animation: spinAround 500ms infinite linear;
+  border: 2px solid #dbdbdb;
+  border-radius: 290486px;
+  border-right-color: transparent;
+  border-top-color: transparent;
+  content: "";
+  display: block;
+  height: 1em;
+  position: absolute;
+  width: 1em;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes spinAround {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(359deg);
+  }
+}

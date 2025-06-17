@@ -1,0 +1,84 @@
+<section class="section">
+  <div class="container">
+    <% if notice %>
+      <div class="notification is-success is-light">
+        <button class="delete"></button>
+        <%= notice %>
+      </div>
+    <% end %>
+
+    <div class="level mb-6">
+      <div class="level-left">
+        <div class="level-item">
+          <h1 class="title is-2">Utilisateurs</h1>
+        </div>
+      </div>
+      <div class="level-right">
+        <div class="level-item">
+          <%= link_to "Nouvel utilisateur", new_user_path,
+              class: "button is-primary" %>
+        </div>
+      </div>
+    </div>
+
+    <div class="columns is-multiline">
+      <% @users.each do |user| %>
+        <div class="column is-4">
+          <div class="card">
+            <div class="card-content">
+              <div class="media">
+                <div class="media-left">
+                  <figure class="image is-48x48">
+                    <span class="has-background-primary has-text-white is-flex is-align-items-center is-justify-content-center"
+                          style="width: 48px; height: 48px; border-radius: 50%; font-size: 18px; font-weight: bold;">
+                      <%= user.first_name&.first&.upcase || "U" %>
+                    </span>
+                  </figure>
+                </div>
+                <div class="media-content">
+                  <p class="title is-5"><%= user.first_name %> <%= user.last_name %></p>
+                  <p class="subtitle is-6 has-text-grey"><%= user.email %></p>
+                </div>
+              </div>
+
+              <div class="content">
+                <% if user.description.present? %>
+                  <p><%= truncate(user.description, length: 80) %></p>
+                <% else %>
+                  <p class="has-text-grey-light">Aucune description</p>
+                <% end %>
+
+                <div class="tags mt-3">
+                  <span class="tag is-info is-light">
+                    <%= pluralize(user.events.count, 'événement') %> créé<%= 's' if user.events.count > 1 %>
+                  </span>
+                  <span class="tag is-success is-light">
+                    <%= pluralize(user.attendances.count, 'participation') %>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <footer class="card-footer">
+              <%= link_to "Voir profil", user_path(user),
+                  class: "card-footer-item has-text-primary" %>
+            </footer>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <% if @users.empty? %>
+      <div class="has-text-centered py-6">
+        <span class="icon is-large has-text-grey-light mb-4">
+          <i class="fas fa-users fa-3x"></i>
+        </span>
+        <h3 class="title is-4 has-text-grey">Aucun utilisateur</h3>
+        <p class="has-text-grey mb-4">
+          Commencez par créer le premier utilisateur.
+        </p>
+        <%= link_to "Créer un utilisateur", new_user_path,
+            class: "button is-primary" %>
+      </div>
+    <% end %>
+  </div>
+</section>

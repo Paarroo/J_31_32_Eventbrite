@@ -1,0 +1,146 @@
+<!-- Hero Section de la page d'accueil -->
+<section class="hero is-primary is-small">
+  <div class="hero-body">
+    <div class="container">
+      <div class="columns is-vcentered">
+        <div class="column is-6">
+          <h1 class="title is-1 has-text-weight-bold">
+            Découvrez les meilleurs événements
+          </h1>
+          <h2 class="subtitle is-4 mt-4">
+            Créez, partagez et participez aux événements qui vous passionnent.
+            Rejoignez une communauté dynamique d'organisateurs et de participants.
+          </h2>
+          <div class="buttons mt-6">
+            <!-- BOUTON PRINCIPAL vers /events -->
+            <%= link_to events_path, class: "button is-white is-large has-text-weight-semibold" do %>
+              <span class="icon">
+                <i class="fas fa-calendar-alt"></i>
+              </span>
+              <span>Découvrir tous les événements</span>
+            <% end %>
+
+            <% if user_signed_in? %>
+              <%= link_to "Créer un événement", new_event_path,
+                  class: "button is-light is-outlined is-large" %>
+            <% else %>
+              <%= link_to "Rejoindre Eventbrite", new_user_registration_path,
+                  class: "button is-light is-outlined is-large" %>
+            <% end %>
+          </div>
+        </div>
+        <div class="column is-6 has-text-centered">
+          <div class="box has-background-primary">
+            <div class="columns is-mobile">
+              <div class="column has-text-centered">
+                <div class="has-text-centered mb-4">
+                  <p class="title is-1 has-text-warning-light mb-4"><%= Event.count %></p>
+                  <p class="subtitle is-6 has-text-weight-semibold">Événements créés</p>
+                </div>
+              </div>
+              <div class="column has-text-centered">
+                <div class="has-text-centered mb-4">
+                  <p class="title is-1 has-text-info mb-4"><%= User.count %></p>
+                  <p class="subtitle is-6 has-text-weight-semibold">Membres actifs</p>
+                </div>
+              </div>
+              <div class="column has-text-centered">
+                <div class="has-text-centered mb-4">
+                  <p class="title is-1 has-text-success mb-4"><%= Attendance.count %></p>
+                  <p class="subtitle is-6 has-text-weight-semibold">Participations</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section des fonctionnalités -->
+<section class="section is-large">
+  <div class="container">
+    <div class="has-text-centered mb-6">
+      <h2 class="title is-2">Pourquoi choisir Eventbrite ?</h2>
+      <p class="subtitle">Tout ce dont vous avez besoin pour créer et gérer vos événements</p>
+    </div>
+
+    <div class="columns">
+      <div class="column is-4">
+        <div class="card has-text-centered" style="height: 100%;">
+          <div class="card-content">
+            <span class="icon is-large has-text-primary mb-4">
+              <i class="fas fa-plus-circle fa-3x"></i>
+            </span>
+            <h3 class="title is-4">Créer facilement</h3>
+            <p class="content">
+              Créez vos événements en quelques clics avec notre interface intuitive.
+              Ajoutez toutes les informations importantes et personnalisez votre page d'événement.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="column is-4">
+        <div class="card has-text-centered" style="height: 100%;">
+          <div class="card-content">
+            <span class="icon is-large has-text-primary mb-4">
+              <i class="fas fa-users fa-3x"></i>
+            </span>
+            <h3 class="title is-4">Gérer vos participants</h3>
+            <p class="content">
+              Suivez les inscriptions en temps réel, communiquez avec vos participants
+              et gérez facilement toute la logistique de vos événements.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="column is-4">
+        <div class="card has-text-centered" style="height: 100%;">
+          <div class="card-content">
+            <span class="icon is-large has-text-primary mb-4">
+              <i class="fas fa-search fa-3x"></i>
+            </span>
+            <h3 class="title is-4">Découvrir et participer</h3>
+            <p class="content">
+              Explorez une variété d'événements près de chez vous.
+              Inscrivez-vous facilement et ne manquez plus jamais un événement qui vous intéresse.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bouton CTA principal -->
+    <div class="has-text-centered mt-6">
+      <%= link_to events_path, class: "button is-primary is-large" do %>
+        <span class="icon">
+          <i class="fas fa-arrow-right"></i>
+        </span>
+        <span>Voir tous les événements disponibles</span>
+      <% end %>
+    </div>
+  </div>
+</section>
+
+<!-- Section d'inscription pour les non-connectés -->
+<% unless user_signed_in? %>
+  <section class="section has-background-light">
+    <div class="container">
+      <div class="has-text-centered">
+        <h2 class="title is-3">Prêt à créer votre propre événement ?</h2>
+        <p class="subtitle is-5 mb-5">
+          Rejoignez des milliers d'organisateurs qui font confiance à Eventbrite
+        </p>
+        <div class="buttons is-centered">
+          <%= link_to "S'inscrire gratuitement", new_user_registration_path,
+              class: "button is-primary is-large mr-4" %>
+          <%= link_to "Se connecter", new_user_session_path,
+              class: "button is-light is-large" %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

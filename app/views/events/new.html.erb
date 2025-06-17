@@ -1,0 +1,82 @@
+<div class="container">
+  <div class="columns is-centered">
+    <div class="column is-half">
+      <div class="box">
+        <h1 class="title">Créer un nouvel événement</h1>
+
+        <%= form_with model: @event, local: true do |form| %>
+          <% if @event.errors.any? %>
+            <div class="notification is-danger">
+              <ul>
+                <% @event.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
+
+          <div class="field">
+            <%= form.label :title, class: "label" %>
+            <div class="control">
+              <%= form.text_field :title, class: "input", placeholder: "Titre de l'événement" %>
+            </div>
+          </div>
+
+          <div class="field">
+            <%= form.label :description, class: "label" %>
+            <div class="control">
+              <%= form.text_area :description, class: "textarea", rows: 4, placeholder: "Description de l'événement" %>
+            </div>
+          </div>
+
+          <div class="columns">
+            <div class="column">
+              <div class="field">
+                <%= form.label :start_date, "Date de début", class: "label" %>
+                <div class="control">
+                  <%= form.datetime_local_field :start_date, class: "input" %>
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="field">
+                <%= form.label :duration, "Durée (en minutes)", class: "label" %>
+                <div class="control">
+                  <%= form.number_field :duration, class: "input", step: 5, min: 5 %>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="columns">
+            <div class="column">
+              <div class="field">
+                <%= form.label :price, "Prix (€)", class: "label" %>
+                <div class="control">
+                  <%= form.number_field :price, class: "input", min: 1, max: 1000 %>
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="field">
+                <%= form.label :location, "Lieu", class: "label" %>
+                <div class="control">
+                  <%= form.text_field :location, class: "input", placeholder: "Adresse de l'événement" %>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="field is-grouped">
+            <div class="control">
+              <%= form.submit "Créer l'événement", class: "button is-primary" %>
+            </div>
+            <div class="control">
+              <%= link_to "Annuler", events_path, class: "button is-light" %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Eventbrite</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <!-- Bulma CSS CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+
+    <!-- CSS personnalisé Eventbrite -->
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+
+    <!-- Font Awesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  </head>
+
+  <body>
+    <!-- Navigation principale -->
+    <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <%= link_to root_path, class: "navbar-item has-text-weight-bold is-size-4" do %>
+          <span class="icon is-medium mr-2">
+            <i class="fas fa-calendar-alt"></i>
+          </span>
+          Eventbrite
+        <% end %>
+
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbar-menu">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+
+      <div id="navbar-menu" class="navbar-menu">
+        <div class="navbar-start">
+          <%= link_to "Accueil", root_path,
+              class: "navbar-item #{'is-active' if current_page?(root_path)}" %>
+          <%= link_to "Événements", events_path,
+              class: "navbar-item #{'is-active' if current_page?(events_path)}" %>
+        </div>
+
+        <div class="navbar-end">
+          <% if user_signed_in? %>
+            <div class="navbar-item">
+              <%= link_to "Créer un événement", new_event_path,
+                  class: "button is-success" %>
+            </div>
+
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a class="navbar-link">
+                <figure class="image is-24x24 mr-2">
+                  <span class="has-background-info has-text-white is-flex is-align-items-center is-justify-content-center"
+                        style="width: 24px; height: 24px; border-radius: 50%; font-size: 12px; font-weight: bold;">
+                    <%= current_user.first_name&.first&.upcase || "U" %>
+                  </span>
+                </figure>
+                <%= current_user.first_name || "Profil" %>
+              </a>
+
+              <div class="navbar-dropdown is-right">
+                <%= link_to user_path(current_user), class: "navbar-item" do %>
+                  <span class="icon">
+                    <i class="fas fa-user"></i>
+                  </span>
+                  Mon profil
+                <% end %>
+
+                <%= link_to my_events_path, class: "navbar-item" do %>
+                  <span class="icon">
+                    <i class="fas fa-calendar"></i>
+                  </span>
+                  Mes événements
+                <% end %>
+
+                <hr class="navbar-divider">
+
+                <%= link_to destroy_user_session_path, method: :delete,
+                    class: "navbar-item has-text-danger" do %>
+                  <span class="icon">
+                    <i class="fas fa-sign-out-alt"></i>
+                  </span>
+                  Déconnexion
+                <% end %>
+              </div>
+            </div>
+          <% else %>
+            <div class="navbar-item">
+              <%= link_to "Connexion", new_user_session_path,
+                  class: "button is-light" %>
+            </div>
+            <div class="navbar-item">
+              <%= link_to "Inscription", new_user_registration_path,
+                  class: "button is-primary" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    <% if notice %>
+      <div class="notification is-success is-light" id="flash-notice">
+        <button class="delete" onclick="closeNotification('flash-notice')"></button>
+        <%= notice %>
+      </div>
+    <% end %>
+
+    <% if alert %>
+      <div class="notification is-danger is-light" id="flash-alert">
+        <button class="delete" onclick="closeNotification('flash-alert')"></button>
+        <%= alert %>
+      </div>
+    <% end %>
+
+    <!-- Contenu principal -->
+    <main>
+      <%= yield %>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer has-background-dark has-text-light" style="padding: 1.5rem 1.5rem 1rem;">
+      <div class="container">
+        <div class="columns" style="margin-bottom: 0.5rem;">
+          <div class="column is-8">
+            <div class="is-flex is-align-items-center mb-2">
+              <span class="icon is-medium mr-3 has-background-primary has-text-white"
+                    style="border-radius: 8px; padding: 8px;">
+                <i class="fas fa-calendar-alt"></i>
+              </span>
+              <span class="title is-5 has-text-light" style="margin-bottom: 0;">Eventbrite</span>
+            </div>
+            <p class="has-text-grey-light mb-2">
+              La plateforme pour créer, découvrir et participer aux meilleurs événements de votre région.
+            </p>
+            <div class="field is-grouped" style="margin-bottom: 0.5rem;">
+              <p class="control">
+                <a href="#" class="button is-dark">
+                  <span class="icon">
+                    <i class="fab fa-twitter"></i>
+                  </span>
+                </a>
+              </p>
+              <p class="control">
+                <a href="#" class="button is-dark">
+                  <span class="icon">
+                    <i class="fab fa-facebook"></i>
+                  </span>
+                </a>
+              </p>
+              <p class="control">
+                <a href="#" class="button is-dark">
+                  <span class="icon">
+                    <i class="fab fa-instagram"></i>
+                  </span>
+                </a>
+              </p>
+            </div>
+          </div>
+
+          <div class="column is-4">
+            <h4 class="title is-6 has-text-light" style="margin-bottom: 0.5rem;">Liens utiles</h4>
+            <ul>
+              <li class="mb-1">
+                <%= link_to "#", class: "has-text-grey-light" do %>
+                  <span class="icon is-small mr-1">
+                    <i class="fas fa-info-circle"></i>
+                  </span>
+                  À propos
+                <% end %>
+              </li>
+              <li class="mb-1">
+                <%= link_to "#", class: "has-text-grey-light" do %>
+                  <span class="icon is-small mr-1">
+                    <i class="fas fa-envelope"></i>
+                  </span>
+                  Contact
+                <% end %>
+              </li>
+              <li class="mb-1">
+                <%= link_to "#", class: "has-text-grey-light" do %>
+                  <span class="icon is-small mr-1">
+                    <i class="fas fa-life-ring"></i>
+                  </span>
+                  Support
+                <% end %>
+              </li>
+              <li class="mb-1">
+                <%= link_to "#", class: "has-text-grey-light" do %>
+                  <span class="icon is-small mr-1">
+                    <i class="fas fa-question-circle"></i>
+                  </span>
+                  FAQ
+                <% end %>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <hr class="has-background-grey" style="margin: 0.75rem 0 0.5rem 0;">
+        <div class="has-text-centered has-text-grey-light" style="margin: 0;">
+          <p style="margin-bottom: 0;">&copy; 2025 Eventbrite. Tous droits réservés.</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- JavaScript pour les interactions -->
+    <script>
+      // Navbar burger toggle
+      document.addEventListener('DOMContentLoaded', () => {
+        const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+
+        $navbarBurgers.forEach( el => {
+          el.addEventListener('click', () => {
+            const target = el.dataset.target;
+            const $target = document.getElementById(target);
+
+            el.classList.toggle('is-active');
+            $target.classList.toggle('is-active');
+          });
+        });
+      });
+
+      function closeNotification(id) {
+        const notification = document.getElementById(id);
+        if (notification) {
+          notification.remove();
+        }
+      }
+
+      // Auto-hide notifications after 5 seconds
+      setTimeout(() => {
+        const notifications = document.querySelectorAll('.notification');
+        notifications.forEach(notification => {
+          notification.style.opacity = '0';
+          setTimeout(() => notification.remove(), 300);
+        });
+      }, 5000);
+    </script>
+  </body>
+</html>

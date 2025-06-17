@@ -1,0 +1,163 @@
+<section class="section">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-6">
+        <!-- Back Button -->
+        <div class="mb-6">
+          <%= link_to user_path(current_user), class: "button is-light" do %>
+            <span class="icon">
+              <i class="fas fa-arrow-left"></i>
+            </span>
+            <span>Retour au profil</span>
+          <% end %>
+        </div>
+
+        <div class="card">
+          <header class="card-header has-background-info">
+            <div class="card-header-title is-centered">
+              <h1 class="title is-4 has-text-white">
+                <span class="icon mr-3">
+                  <i class="fas fa-user-cog"></i>
+                </span>
+                Paramètres de sécurité
+              </h1>
+            </div>
+          </header>
+
+          <div class="card-content">
+            <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+              <!-- Messages d'erreur -->
+              <% if resource.errors.any? %>
+                <div class="notification is-danger">
+                  <button class="delete"></button>
+                  <p class="has-text-weight-bold mb-3">
+                    <%= pluralize(resource.errors.count, "erreur") %> à corriger :
+                  </p>
+                  <ul>
+                    <% resource.errors.full_messages.each do |message| %>
+                      <li>• <%= message %></li>
+                    <% end %>
+                  </ul>
+                </div>
+              <% end %>
+
+              <!-- Section Email -->
+              <div class="box">
+                <h3 class="title is-5">
+                  <span class="icon mr-2">
+                    <i class="fas fa-envelope"></i>
+                  </span>
+                  Adresse email
+                </h3>
+
+                <div class="field">
+                  <%= f.label :email, "Nouvelle adresse email", class: "label" %>
+                  <div class="control has-icons-left">
+                    <%= f.email_field :email, autofocus: true, autocomplete: "email",
+                        class: "input", placeholder: "nouvelle@email.com" %>
+                    <span class="icon is-small is-left">
+                      <i class="fas fa-envelope"></i>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Section Mot de passe -->
+              <div class="box">
+                <h3 class="title is-5">
+                  <span class="icon mr-2">
+                    <i class="fas fa-lock"></i>
+                  </span>
+                  Changer le mot de passe
+                </h3>
+
+                <div class="field">
+                  <%= f.label :password, "Nouveau mot de passe", class: "label" %>
+                  <div class="control has-icons-left">
+                    <%= f.password_field :password, autocomplete: "new-password",
+                        class: "input", placeholder: "••••••••" %>
+                    <span class="icon is-small is-left">
+                      <i class="fas fa-lock"></i>
+                    </span>
+                  </div>
+                  <p class="help">Laissez vide si vous ne voulez pas le changer</p>
+                  <% if @minimum_password_length %>
+                    <p class="help">Minimum <%= @minimum_password_length %> caractères</p>
+                  <% end %>
+                </div>
+
+                <div class="field">
+                  <%= f.label :password_confirmation, "Confirmer le nouveau mot de passe", class: "label" %>
+                  <div class="control has-icons-left">
+                    <%= f.password_field :password_confirmation, autocomplete: "new-password",
+                        class: "input", placeholder: "••••••••" %>
+                    <span class="icon is-small is-left">
+                      <i class="fas fa-lock"></i>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Mot de passe actuel (requis pour valider les changements) -->
+              <div class="box">
+                <h3 class="title is-5">
+                  <span class="icon mr-2">
+                    <i class="fas fa-shield-alt"></i>
+                  </span>
+                  Vérification de sécurité
+                </h3>
+
+                <div class="field">
+                  <%= f.label :current_password, "Mot de passe actuel", class: "label" %>
+                  <div class="control has-icons-left">
+                    <%= f.password_field :current_password, autocomplete: "current-password",
+                        class: "input", placeholder: "••••••••", required: true %>
+                    <span class="icon is-small is-left">
+                      <i class="fas fa-key"></i>
+                    </span>
+                  </div>
+                  <p class="help">Requis pour confirmer les modifications</p>
+                </div>
+              </div>
+
+              <!-- Boutons d'action -->
+              <div class="field is-grouped is-grouped-centered">
+                <%= f.submit "Sauvegarder les modifications", class: "button is-info is-medium mr-4" %>
+                <%= link_to "Annuler", user_path(current_user), class: "button is-light is-medium" %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Section Suppression de compte -->
+        <div class="card mt-6 has-background-danger-light">
+          <header class="card-header has-background-danger">
+            <div class="card-header-title">
+              <h3 class="title is-5 has-text-white">
+                <span class="icon mr-2">
+                  <i class="fas fa-exclamation-triangle"></i>
+                </span>
+                Zone dangereuse
+              </h3>
+            </div>
+          </header>
+
+          <div class="card-content">
+            <div class="content">
+              <p class="has-text-weight-semibold">Supprimer définitivement mon compte</p>
+              <p class="has-text-grey">
+                Cette action est irréversible. Toutes vos données seront perdues.
+              </p>
+              <%= link_to "Supprimer mon compte", registration_path(resource_name),
+                  data: {
+                    confirm: "Êtes-vous vraiment sûr ? Cette action est irréversible !",
+                    method: :delete
+                  },
+                  class: "button is-danger mt-3" %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

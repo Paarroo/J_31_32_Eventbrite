@@ -1,0 +1,374 @@
+<!-- Breadcrumb -->
+<section class="section is-small">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="breadcrumbs">
+      <ul>
+        <li><%= link_to "Accueil", root_path %></li>
+        <li><%= link_to "Événements", events_path %></li>
+        <li class="is-active"><a href="#" aria-current="page"><%= truncate(@event.title, length: 30) %></a></li>
+      </ul>
+    </nav>
+  </div>
+</section>
+
+<!-- Event Header -->
+<section class="section is-medium has-background-light">
+  <div class="container">
+    <div class="columns is-vcentered">
+      <div class="column is-8">
+        <h1 class="title is-1 has-text-weight-bold mb-4">
+          <%= @event.title %>
+        </h1>
+
+        <div class="tags are-large mb-4">
+          <span class="tag is-primary is-large">
+            <span class="icon">
+              <i class="fas fa-calendar-alt"></i>
+            </span>
+            <span><%= @event.start_date.strftime("%d %B %Y") %></span>
+          </span>
+          <span class="tag is-info is-large">
+            <span class="icon">
+              <i class="fas fa-clock"></i>
+            </span>
+            <span><%= @event.start_date.strftime("%H:%M") %> - <%= @event.end_date.strftime("%H:%M") %></span>
+          </span>
+          <span class="tag is-success is-large">
+            <span class="icon">
+              <i class="fas fa-euro-sign"></i>
+            </span>
+            <span><%= @event.price %>€</span>
+          </span>
+        </div>
+
+        <div class="level is-mobile">
+          <div class="level-left">
+            <div class="level-item">
+              <span class="icon-text">
+                <span class="icon has-text-grey">
+                  <i class="fas fa-map-marker-alt"></i>
+                </span>
+                <span class="has-text-grey-dark is-size-5">
+                  <%= @event.location %>
+                </span>
+              </span>
+            </div>
+          </div>
+          <div class="level-right">
+            <div class="level-item">
+              <span class="icon-text">
+                <span class="icon has-text-grey">
+                  <i class="fas fa-users"></i>
+                </span>
+                <span class="has-text-grey-dark is-size-5">
+                  <%= @event.participants_count %> participant<%= 's' if @event.participants_count > 1 %>
+                </span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="column is-4 has-text-centered">
+        <div class="box">
+          <p class="title is-2 has-text-success"><%= @event.price %>€</p>
+          <p class="subtitle">par participant</p>
+
+          <% if user_signed_in? %>
+            <% if @event.user == current_user %>
+              <!-- Propriétaire de l'événement -->
+              <div class="notification is-info is-light">
+                <span class="icon">
+                  <i class="fas fa-crown"></i>
+                </span>
+                <span>Vous êtes l'organisateur</span>
+              </div>
+
+              <div class="buttons">
+                <%= link_to edit_event_path(@event), class: "button is-warning is-fullwidth mb-2" do %>
+                  <span class="icon">
+                    <i class="fas fa-edit"></i>
+                  </span>
+                  <span>Modifier l'événement</span>
+                <% end %>
+
+                <%= link_to event_participants_path(@event), class: "button is-info is-fullwidth" do %>
+                  <span class="icon">
+                    <i class="fas fa-users"></i>
+                  </span>
+                  <span>Voir les participants</span>
+                <% end %>
+              </div>
+
+            <% elsif @event.participants.include?(current_user) %>
+              <!-- Utilisateur déjà inscrit -->
+              <div class="notification is-success is-light mb-4">
+                <span class="icon">
+                  <i class="fas fa-check-circle"></i>
+                </span>
+                <span>Vous êtes inscrit !</span>
+              </div>
+
+              <%= button_to event_attendances_path(@event), method: :delete,
+                  class: "button is-danger is-fullwidth",
+                  data: { confirm: "Êtes-vous sûr de vouloir annuler votre participation ?" } do %>
+                <span class="icon">
+                  <i class="fas fa-times"></i>
+                </span>
+                <span>Annuler ma participation</span>
+              <% end %>
+
+            <% else %>
+              <!-- Utilisateur peut s'inscrire -->
+              <%= button_to event_attendances_path(@event), method: :post,
+                  class: "button is-primary is-large is-fullwidth" do %>
+                <span class="icon">
+                  <i class="fas fa-ticket-alt"></i>
+                </span>
+                <span>Participer à l'événement</span>
+              <% end %>
+            <% end %>
+          <% else %>
+            <!-- Utilisateur non connecté -->
+            <div class="notification is-warning is-light mb-4">
+              <p>Connectez-vous pour participer</p>
+            </div>
+
+            <%= link_to "Se connecter", new_user_session_path,
+                class: "button is-primary is-fullwidth mb-2" %>
+            <%= link_to "S'inscrire", new_user_registration_path,
+                class: "button is-light is-fullwidth" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Event Content -->
+<section class="section">
+  <div class="container">
+    <div class="columns">
+      <!-- Main Content -->
+      <div class="column is-8">
+        <div class="card">
+          <header class="card-header">
+            <p class="card-header-title">
+              <span class="icon">
+                <i class="fas fa-info-circle"></i>
+              </span>
+              Description de l'événement
+            </p>
+          </header>
+          <div class="card-content">
+            <div class="content">
+              <p class="is-size-5 has-text-justified">
+                <%= simple_format(@event.description) %>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Event Details -->
+        <div class="card mt-5">
+          <header class="card-header">
+            <p class="card-header-title">
+              <span class="icon">
+                <i class="fas fa-calendar-check"></i>
+              </span>
+              Détails de l'événement
+            </p>
+          </header>
+          <div class="card-content">
+            <div class="columns">
+              <div class="column">
+                <div class="field">
+                  <label class="label">Date et heure de début</label>
+                  <div class="control">
+                    <div class="tags has-addons">
+                      <span class="tag is-dark">
+                        <span class="icon">
+                          <i class="fas fa-calendar"></i>
+                        </span>
+                        <span><%= @event.start_date.strftime("%A %d %B %Y") %></span>
+                      </span>
+                      <span class="tag is-primary">
+                        <span class="icon">
+                          <i class="fas fa-clock"></i>
+                        </span>
+                        <span><%= @event.start_date.strftime("%H:%M") %></span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="column">
+                <div class="field">
+                  <label class="label">Durée</label>
+                  <div class="control">
+                    <span class="tag is-info is-large">
+                      <span class="icon">
+                        <i class="fas fa-hourglass-half"></i>
+                      </span>
+                      <span><%= @event.duration %> minutes</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label">Lieu</label>
+              <div class="control">
+                <span class="icon-text">
+                  <span class="icon has-text-danger">
+                    <i class="fas fa-map-marker-alt"></i>
+                  </span>
+                  <span class="is-size-5"><%= @event.location %></span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="column is-4">
+        <!-- Organizer Info -->
+        <div class="card">
+          <header class="card-header">
+            <p class="card-header-title">
+              <span class="icon">
+                <i class="fas fa-user-tie"></i>
+              </span>
+              Organisateur
+            </p>
+          </header>
+          <div class="card-content">
+            <div class="media">
+              <div class="media-left">
+                <figure class="image is-48x48">
+                  <span class="has-background-primary has-text-white is-flex is-align-items-center is-justify-content-center"
+                        style="width: 48px; height: 48px; border-radius: 50%; font-size: 18px; font-weight: bold;">
+                    <%= @event.user.first_name&.first&.upcase || "U" %>
+                  </span>
+                </figure>
+              </div>
+              <div class="media-content">
+                <p class="title is-5"><%= @event.user.first_name %> <%= @event.user.last_name %></p>
+                <p class="subtitle is-6"><%= @event.user.email %></p>
+              </div>
+            </div>
+
+            <% if @event.user.description.present? %>
+              <div class="content">
+                <p><%= truncate(@event.user.description, length: 100) %></p>
+                <%= link_to "Voir le profil", user_path(@event.user), class: "button is-light is-small" %>
+              </div>
+            <% else %>
+              <%= link_to "Voir le profil", user_path(@event.user), class: "button is-light is-fullwidth" %>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Participants Preview -->
+        <div class="card mt-5">
+          <header class="card-header">
+            <p class="card-header-title">
+              <span class="icon">
+                <i class="fas fa-users"></i>
+              </span>
+              Participants (<%= @event.participants_count %>)
+            </p>
+          </header>
+          <div class="card-content">
+            <% if @event.participants.any? %>
+              <% @event.participants.limit(5).each do |participant| %>
+                <div class="media">
+                  <div class="media-left">
+                    <figure class="image is-32x32">
+                      <span class="has-background-info has-text-white is-flex is-align-items-center is-justify-content-center"
+                            style="width: 32px; height: 32px; border-radius: 50%; font-size: 12px; font-weight: bold;">
+                        <%= participant.first_name&.first&.upcase || "U" %>
+                      </span>
+                    </figure>
+                  </div>
+                  <div class="media-content">
+                    <p class="has-text-weight-semibold">
+                      <%= participant.first_name %> <%= participant.last_name&.first %>.</p>
+                  </div>
+                </div>
+              <% end %>
+
+              <% if @event.participants_count > 5 %>
+                <p class="has-text-grey mt-3">
+                  et <%= @event.participants_count - 5 %> autre<%= 's' if @event.participants_count - 5 > 1 %>...
+                </p>
+              <% end %>
+
+              <% if current_user == @event.user %>
+                <%= link_to "Voir tous les participants", event_participants_path(@event),
+                    class: "button is-info is-fullwidth mt-3" %>
+              <% end %>
+            <% else %>
+              <p class="has-text-grey">Aucun participant pour le moment</p>
+              <% unless user_signed_in? %>
+                <p class="has-text-grey-light is-size-7 mt-2">
+                  Soyez le premier à vous inscrire !
+                </p>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Admin Actions (seulement pour le propriétaire) -->
+        <% if user_signed_in? && current_user == @event.user %>
+          <div class="card mt-5">
+            <header class="card-header has-background-warning">
+              <p class="card-header-title has-text-white">
+                <span class="icon">
+                  <i class="fas fa-cog"></i>
+                </span>
+                Actions d'administration
+              </p>
+            </header>
+            <div class="card-content">
+              <div class="buttons">
+                <%= link_to edit_event_path(@event), class: "button is-warning is-fullwidth mb-2" do %>
+                  <span class="icon">
+                    <i class="fas fa-edit"></i>
+                  </span>
+                  <span>Modifier l'événement</span>
+                <% end %>
+
+                <%= button_to event_path(@event), method: :delete,
+                    class: "button is-danger is-fullwidth",
+                    data: { confirm: "Êtes-vous sûr de vouloir supprimer cet événement ? Cette action est irréversible." } do %>
+                  <span class="icon">
+                    <i class="fas fa-trash"></i>
+                  </span>
+                  <span>Supprimer l'événement</span>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Back to Events -->
+<section class="section is-small">
+  <div class="container">
+    <div class="has-text-centered">
+      <%= link_to events_path, class: "button is-light is-medium" do %>
+        <span class="icon">
+          <i class="fas fa-arrow-left"></i>
+        </span>
+        <span>Retour aux événements</span>
+      <% end %>
+    </div>
+  </div>
+</section>
