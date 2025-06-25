@@ -1,0 +1,21 @@
+Salut <%= @user.first_name || @user.name %> !
+
+Bienvenue sur <%= @app_name %> !
+
+Nous sommes ravis de t'accueillir dans notre communauté.
+Ton compte a été créé avec succès avec l'adresse email : <%= @user.email %>
+
+Connecte-toi maintenant : <%= @login_url %>
+
+Prochaines étapes :
+- Complète ton profil
+- Explore les fonctionnalités
+- Rejoins la communauté
+
+Si tu as des questions, contacte-nous à <%= @support_email %>
+
+À très bientôt sur <%= @app_name %> !
+
+<% if Rails.env.development? %>
+[MODE DEV] Utilisateur ID: <%= @user.id %> | Créé le: <%= @user.created_at %>
+<% end %>

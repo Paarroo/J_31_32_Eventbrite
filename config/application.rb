@@ -1,27 +1,50 @@
+# config/application.rb
 require_relative "boot"
 
 require "rails/all"
 
-# Require the gems listed in Gemfile, including any gems
-# you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
 module J3132Eventbrite
   class Application < Rails::Application
-    # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 8.0
-
-    # Please, add to the `ignore` list any other `lib` subdirectories that do
-    # not contain `.rb` files, or that should not be reloaded or eager loaded.
-    # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w[assets tasks])
 
-    # Configuration for the application, engines, and railties goes here.
-    #
-    # These settings can be overridden in specific environments using the files
-    # in config/environments, which are processed later.
-    #
-    # config.time_zone = "Central Time (US & Canada)"
-    # config.eager_load_paths << Rails.root.join("extras")
+    # Configuration Stripe
+    config.stripe = {
+      publishable_key: ENV['STRIPE_PUBLISHABLE_KEY'],
+      secret_key: ENV['STRIPE_SECRET_KEY']
+    }
+
+    # Configuration pour les admins
+    config.admin_emails = ENV['ADMIN_EMAILS']&.split(',') || [ 'admin@eventbrite.local' ]
+
+    # Configuration des emails
+    config.action_mailer.default_url_options = {
+      host: ENV['APP_HOST'] || 'localhost:3000',
+      protocol: Rails.env.production? ? 'https' : 'http'
+    }
+
+    # Configuration pour l'internationalisation
+    config.i18n.default_locale = :fr
+    config.i18n.available_locales = [ :fr, :en ]
+
+    if Rails.env.development?
+      config.active_job.queue_adapter = :async
+    elsif Rails.env.production?
+      config.active_job.queue_adapter = :solid_queue
+    else
+      config.active_job.queue_adapter = :test
+    end
+
+    # Configuration de sécurité
+    config.force_ssl = Rails.env.production?
+
+    # Configuration des logs
+    if Rails.env.development?
+      config.log_level = :debug
+    elsif Rails.env.production?
+      config.log_level = :info
+    end
   end
 end

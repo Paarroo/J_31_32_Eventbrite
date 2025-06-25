@@ -1,0 +1,142 @@
+<div class="container">
+  <div class="mb-6">
+    <%= link_to admin_user_path(@user), class: "button is-light" do %>
+      <span class="icon">
+        <i class="fas fa-arrow-left"></i>
+      </span>
+      <span>Retour au profil</span>
+    <% end %>
+  </div>
+
+  <div class="card">
+    <header class="card-header">
+      <div class="card-header-title">
+        <h1 class="title is-3">
+          <span class="icon mr-3 has-text-info">
+            <i class="fas fa-user-edit"></i>
+          </span>
+          Modifier l'utilisateur
+        </h1>
+      </div>
+    </header>
+
+    <div class="card-content">
+      <%= form_with(model: @user, url: admin_user_path(@user), method: :patch, local: true) do |form| %>
+        <!-- Affichage des erreurs -->
+        <% if @user.errors.any? %>
+          <div class="notification is-danger">
+            <h4><%= pluralize(@user.errors.count, "erreur") %> empêche la sauvegarde :</h4>
+            <ul>
+              <% @user.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="columns">
+          <div class="column is-8">
+            <!-- Informations personnelles -->
+            <div class="columns">
+              <div class="column">
+                <div class="field">
+                  <label class="label">Prénom *</label>
+                  <div class="control">
+                    <%= form.text_field :first_name, class: "input", placeholder: "Prénom", required: true %>
+                  </div>
+                </div>
+              </div>
+
+              <div class="column">
+                <div class="field">
+                  <label class="label">Nom de famille *</label>
+                  <div class="control">
+                    <%= form.text_field :last_name, class: "input", placeholder: "Nom de famille", required: true %>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label">Email *</label>
+              <div class="control">
+                <%= form.email_field :email, class: "input", placeholder: "email@exemple.com", required: true %>
+              </div>
+              <p class="help">⚠️ Changer l'email nécessitera une re-confirmation</p>
+            </div>
+
+            <div class="field">
+              <label class="label">Description</label>
+              <div class="control">
+                <%= form.text_area :description, class: "textarea", rows: 4, placeholder: "Biographie ou description de l'utilisateur..." %>
+              </div>
+              <p class="help">Visible sur le profil public</p>
+            </div>
+          </div>
+
+          <div class="column is-4">
+            <!-- Panel administrateur -->
+            <div class="box has-background-light">
+              <h4 class="title is-6">🛡️ Privilèges administrateur</h4>
+
+              <div class="field">
+                <div class="control">
+                  <label class="checkbox">
+                    <%= form.check_box :admin %>
+                    Droits administrateur
+                  </label>
+                </div>
+                <p class="help">
+                  <% if @user.admin? %>
+                    <span class="has-text-danger">✅ Cet utilisateur est administrateur</span>
+                  <% else %>
+                    <span class="has-text-grey">❌ Utilisateur standard</span>
+                  <% end %>
+                </p>
+              </div>
+
+              <% if @user == current_user %>
+                <div class="notification is-warning is-light">
+                  <p class="is-size-7">
+                    <strong>⚠️ Attention :</strong> Vous modifiez votre propre compte. Retirer vos droits admin vous empêchera d'accéder à cette interface.
+                  </p>
+                </div>
+              <% end %>
+            </div>
+
+            <!-- Statistiques utilisateur -->
+            <div class="box">
+              <h4 class="title is-6">📊 Statistiques</h4>
+
+              <div class="field">
+                <label class="label">Événements créés</label>
+                <p class="title is-4 has-text-primary"><%= @user.events.count %></p>
+              </div>
+
+              <div class="field">
+                <label class="label">Participations</label>
+                <p class="title is-4 has-text-info"><%= @user.attendances.count %></p>
+              </div>
+
+              <div class="field">
+                <label class="label">Inscrit le</label>
+                <p class="is-size-7 has-text-grey">
+                  <%= @user.created_at.strftime("%d/%m/%Y") %>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="field is-grouped is-grouped-right">
+          <%= link_to admin_user_path(@user), class: "button is-light" do %>
+            Annuler
+          <% end %>
+
+          <%= form.submit "Sauvegarder les modifications", class: "button is-info" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

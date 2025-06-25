@@ -1,0 +1,77 @@
+<!-- app/views/admin/sessions/new.html.erb -->
+<div class="hero is-primary is-fullheight">
+  <div class="hero-body">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-5-tablet is-4-desktop is-3-widescreen">
+          <div class="box">
+            <div class="has-text-centered mb-5">
+              <span class="icon is-large has-text-primary">
+                <i class="fas fa-shield-alt fa-3x"></i>
+              </span>
+              <h1 class="title is-3 mt-3">Administration</h1>
+              <p class="subtitle is-6 has-text-grey">Accès réservé aux administrateurs</p>
+            </div>
+
+            <%= form_with url: admin_login_path, method: :post, local: true, class: "form" do |form| %>
+              <div class="field">
+                <label class="label">Email</label>
+                <div class="control has-icons-left">
+                  <%= email_field_tag :email, params[:email],
+                      class: "input",
+                      placeholder: "admin@example.com",
+                      required: true %>
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-envelope"></i>
+                  </span>
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="label">Mot de passe</label>
+                <div class="control has-icons-left">
+                  <%= password_field_tag :password, "",
+                      class: "input",
+                      placeholder: "••••••••",
+                      required: true %>
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-lock"></i>
+                  </span>
+                </div>
+              </div>
+
+              <div class="field">
+                <div class="control">
+                  <%= submit_tag "Se connecter",
+                      class: "button is-primary is-fullwidth is-medium" %>
+                </div>
+              </div>
+            <% end %>
+
+            <hr>
+
+            <div class="has-text-centered">
+              <%= link_to root_path, class: "button is-light is-small" do %>
+                <span class="icon">
+                  <i class="fas fa-arrow-left"></i>
+                </span>
+                <span>Retour au site</span>
+              <% end %>
+            </div>
+
+            <!-- Aide pour les développeurs -->
+            <% if Rails.env.development? %>
+              <div class="notification is-info is-light mt-4">
+                <p class="is-size-7">
+                  <strong>Mode développement :</strong><br>
+                  Pour créer un admin, utilisez la console Rails :<br>
+                  <code>User.first.update!(admin: true)</code>
+                </p>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

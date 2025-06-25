@@ -1,0 +1,175 @@
+<!-- app/views/admin/users/index.html.erb -->
+<div class="container">
+  <div class="level mb-6">
+    <div class="level-left">
+      <div class="level-item">
+        <div>
+          <h1 class="title is-2 mb-5">
+            <span class="icon mr-3 has-text-info">
+              <i class="fas fa-users"></i>
+            </span>
+            Gestion des utilisateurs
+          </h1>
+          <p class="subtitle">
+            <%= pluralize(@users.count, 'utilisateur') %> inscrit<%= 's' if @users.count > 1 %> sur la plateforme
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="level-right">
+      <div class="level-item">
+        <%= link_to admin_root_path, class: "button is-light" do %>
+          <span class="icon">
+            <i class="fas fa-arrow-left"></i>
+          </span>
+          <span>Retour au dashboard</span>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistiques rapides -->
+  <div class="columns mb-6">
+    <div class="column">
+      <div class="card has-background-info">
+        <div class="card-content has-text-white has-text-centered">
+          <p class="title is-3 has-text-white"><%= @users.count %></p>
+          <p class="subtitle is-6 has-text-white">Total utilisateurs</p>
+        </div>
+      </div>
+    </div>
+    <div class="column">
+      <div class="card has-background-danger">
+        <div class="card-content has-text-white has-text-centered">
+          <p class="title is-3 has-text-white"><%= @users.where(admin: true).count %></p>
+          <p class="subtitle is-6 has-text-white">Administrateurs</p>
+        </div>
+      </div>
+    </div>
+    <div class="column">
+      <div class="card has-background-success">
+        <div class="card-content has-text-white has-text-centered">
+          <p class="title is-3 has-text-white"><%= @users.joins(:events).distinct.count %></p>
+          <p class="subtitle is-6 has-text-white">Organisateurs</p>
+        </div>
+      </div>
+    </div>
+    <div class="column">
+      <div class="card has-background-warning">
+        <div class="card-content has-text-white has-text-centered">
+          <p class="title is-3 has-text-white"><%= @users.joins(:attendances).distinct.count %></p>
+          <p class="subtitle is-6 has-text-white">Participants</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Liste des utilisateurs -->
+  <div class="card">
+    <header class="card-header">
+      <div class="card-header-title">
+        <span class="icon mr-2">
+          <i class="fas fa-list"></i>
+        </span>
+        <span>Liste des utilisateurs</span>
+      </div>
+    </header>
+
+    <div class="card-content">
+      <% if @users.any? %>
+        <% @users.each do |user| %>
+          <div class="box">
+            <div class="level">
+              <div class="level-left">
+                <div class="level-item">
+                  <figure class="image is-48x48 mr-4">
+                    <span class="has-background-primary has-text-white is-flex is-align-items-center is-justify-content-center"
+                          style="width: 48px; height: 48px; border-radius: 50%; font-size: 18px; font-weight: bold;">
+                      <%= user.first_name&.first&.upcase || "U" %>
+                    </span>
+                  </figure>
+                  <div>
+                    <p class="title is-5 mb-4">
+                      <%= link_to "#{user.first_name} #{user.last_name}", admin_user_path(user), class: "has-text-info" %>
+                      <% if user.admin? %>
+                        <span class="tag is-danger ml-2">
+                          <span class="icon is-small">
+                            <i class="fas fa-crown"></i>
+                          </span>
+                          <span>Admin</span>
+                        </span>
+                      <% end %>
+                    </p>
+                    <p class="subtitle is-6 has-text-grey mb-1"><%= user.email %></p>
+                    <div class="tags">
+                      <span class="tag is-info is-light">
+                        <%= pluralize(user.events.count, 'événement') %>
+                      </span>
+                      <span class="tag is-success is-light">
+                        <%= pluralize(user.attendances.count, 'participation') %>
+                      </span>
+                      <span class="tag is-light">
+                        Inscrit <%= time_ago_in_words(user.created_at) %>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="level-right">
+                <div class="level-item">
+                  <div class="buttons">
+                    <%= link_to admin_user_path(user), class: "button is-info is-small" do %>
+                      <span class="icon is-small">
+                        <i class="fas fa-eye"></i>
+                      </span>
+                      <span>Voir</span>
+                    <% end %>
+
+                    <%= link_to edit_admin_user_path(user), class: "button is-warning is-small" do %>
+                      <span class="icon is-small">
+                        <i class="fas fa-edit"></i>
+                      </span>
+                      <span>Modifier</span>
+                    <% end %>
+
+                    <% unless user == current_user %>
+                      <%= link_to toggle_admin_admin_user_path(user),
+                          method: :patch,
+                          class: "button #{user.admin? ? 'is-danger' : 'is-success'} is-small",
+                          data: { confirm: "Êtes-vous sûr de vouloir #{user.admin? ? 'retirer' : 'donner'} les droits admin ?" } do %>
+                        <span class="icon is-small">
+                          <i class="fas fa-#{user.admin? ? 'user-minus' : 'user-plus'}"></i>
+                        </span>
+                        <span><%= user.admin? ? 'Retirer admin' : 'Promouvoir admin' %></span>
+                      <% end %>
+                    <% end %>
+
+                    <% unless user == current_user %>
+                      <%= button_to admin_user_path(user),
+                          method: :delete,
+                          class: "button is-danger is-small",
+                          data: { confirm: "Êtes-vous sûr de vouloir supprimer cet utilisateur ?" } do %>
+                        <span class="icon is-small">
+                          <i class="fas fa-trash"></i>
+                        </span>
+                        <span>Supprimer</span>
+                      <% end %>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      <% else %>
+        <div class="has-text-centered py-6">
+          <span class="icon is-large has-text-grey-light mb-4">
+            <i class="fas fa-users fa-3x"></i>
+          </span>
+          <h3 class="title is-5 has-text-grey">Aucun utilisateur trouvé</h3>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

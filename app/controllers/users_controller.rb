@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: %i[ show edit update destroy ]
+  before_action :set_user, only: [ :show, :edit, :update, :destroy ]
   before_action :authenticate_user!, only: [ :show, :edit, :update, :destroy ]
   before_action :check_user_authorization, only: [ :edit, :update, :destroy ]
 
@@ -63,11 +63,18 @@ class UsersController < ApplicationController
     end
   end
 
+
   private
 
   # Use callbacks to share common setup or constraints between actions.
   def set_user
-    @user = User.find(params[:id])
+    if params[:id].present? && params[:id].match?(/\A\d+\z/)
+      @user = User.find(params[:id])
+    else
+      redirect_to root_path, alert: "Utilisateur non trouvé"
+    end
+  rescue ActiveRecord::RecordNotFound
+    redirect_to root_path, alert: "Utilisateur introuvable"
   end
 
   # Vérification que l'utilisateur connecté est bien le propriétaire du profil

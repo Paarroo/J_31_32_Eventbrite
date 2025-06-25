@@ -1,0 +1,235 @@
+<!-- app/views/admin/users/show.html.erb -->
+<div class="container">
+  <div class="mb-6">
+    <%= link_to admin_users_path, class: "button is-light" do %>
+      <span class="icon">
+        <i class="fas fa-arrow-left"></i>
+      </span>
+      <span>Retour à la liste</span>
+    <% end %>
+  </div>
+
+  <!-- Profile utilisateur -->
+  <div class="card mb-6">
+    <div class="card-content">
+      <div class="media">
+        <div class="media-left">
+          <figure class="image is-96x96">
+            <span class="has-background-primary has-text-white is-flex is-align-items-center is-justify-content-center"
+                  style="width: 96px; height: 96px; border-radius: 50%; font-size: 36px; font-weight: bold;">
+              <%= @user.first_name&.first&.upcase || "U" %>
+            </span>
+          </figure>
+        </div>
+        <div class="media-content">
+          <h1 class="title is-3">
+            <%= @user.first_name %> <%= @user.last_name %>
+            <% if @user.admin? %>
+              <span class="tag is-danger ml-2">
+                <span class="icon is-small">
+                  <i class="fas fa-crown"></i>
+                </span>
+                <span>Administrateur</span>
+              </span>
+            <% end %>
+          </h1>
+          <p class="subtitle is-5"><%= @user.email %></p>
+
+          <% if @user.description.present? %>
+            <div class="content">
+              <p><%= @user.description %></p>
+            </div>
+          <% end %>
+
+          <div class="field is-grouped">
+            <%= link_to edit_admin_user_path(@user), class: "button is-warning" do %>
+              <span class="icon">
+                <i class="fas fa-edit"></i>
+              </span>
+              <span>Modifier</span>
+            <% end %>
+
+            <% unless @user == current_user %>
+              <%= link_to toggle_admin_admin_user_path(@user),
+                  method: :patch,
+                  class: "button #{@user.admin? ? 'is-danger' : 'is-success'}",
+                  data: { confirm: "Êtes-vous sûr ?" } do %>
+                <span class="icon">
+                  <i class="fas fa-#{@user.admin? ? 'user-minus' : 'user-plus'}"></i>
+                </span>
+                <span><%= @user.admin? ? 'Retirer admin' : 'Promouvoir admin' %></span>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="columns">
+    <!-- Statistiques -->
+    <div class="column is-4">
+      <div class="card mb-6">
+        <header class="card-header">
+          <div class="card-header-title">
+            <span class="icon mr-2">
+              <i class="fas fa-chart-bar"></i>
+            </span>
+            Statistiques
+          </div>
+        </header>
+        <div class="card-content has-text-centered">
+          <div class="columns">
+            <div class="column">
+              <div class="title is-3 has-text-primary"><%= @user.events.count %></div>
+              <div class="subtitle is-6">Événements créés</div>
+            </div>
+            <div class="column">
+              <div class="title is-3 has-text-info"><%= @user.attendances.count %></div>
+              <div class="subtitle is-6">Participations</div>
+            </div>
+          </div>
+          <hr>
+          <div>
+            <div class="title is-4 has-text-success">
+              <%= @user.events.joins(:confirmed_participants).distinct.count('users.id') rescue 0 %>
+            </div>
+            <div class="subtitle is-6">Personnes touchées</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Informations -->
+      <div class="card">
+        <header class="card-header">
+          <div class="card-header-title">
+            <span class="icon mr-2">
+              <i class="fas fa-info-circle"></i>
+            </span>
+            Informations
+          </div>
+        </header>
+        <div class="card-content">
+          <div class="field">
+            <label class="label">Email</label>
+            <p><%= @user.email %></p>
+          </div>
+          <div class="field">
+            <label class="label">Inscrit le</label>
+            <p><%= @user.created_at.strftime("%d/%m/%Y à %H:%M") %></p>
+          </div>
+          <div class="field">
+            <label class="label">Dernière connexion</label>
+            <p><%= @user.updated_at.strftime("%d/%m/%Y à %H:%M") %></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Événements créés -->
+    <div class="column is-8">
+      <div class="card mb-6">
+        <header class="card-header">
+          <div class="card-header-title">
+            <span class="icon mr-2">
+              <i class="fas fa-calendar-plus"></i>
+            </span>
+            Événements créés (<%= @user_events.count %>)
+          </div>
+        </header>
+        <div class="card-content">
+          <% if @user_events.any? %>
+            <% @user_events.limit(5).each do |event| %>
+              <div class="box">
+                <div class="level">
+                  <div class="level-left">
+                    <div>
+                      <p class="title is-6">
+                        <%= link_to event.title, admin_event_path(event), class: "has-text-primary" %>
+                      </p>
+                      <div class="tags">
+                        <% if event.validated? %>
+                          <span class="tag is-success">Validé</span>
+                        <% elsif event.rejected? %>
+                          <span class="tag is-danger">Refusé</span>
+                        <% else %>
+                          <span class="tag is-warning">En attente</span>
+                        <% end %>
+                        <span class="tag is-info"><%= event.start_date.strftime("%d/%m/%Y") %></span>
+                        <span class="tag is-success"><%= event.price %>€</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="level-right">
+                    <%= link_to admin_event_path(event), class: "button is-small is-info" do %>
+                      <span class="icon is-small">
+                        <i class="fas fa-eye"></i>
+                      </span>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+            <% if @user_events.count > 5 %>
+              <p class="has-text-centered">
+                <em>et <%= @user_events.count - 5 %> autres événements...</em>
+              </p>
+            <% end %>
+          <% else %>
+            <p class="has-text-grey has-text-centered">Aucun événement créé</p>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Participations -->
+      <div class="card">
+        <header class="card-header">
+          <div class="card-header-title">
+            <span class="icon mr-2">
+              <i class="fas fa-ticket-alt"></i>
+            </span>
+            Participations (<%= @user_attendances.count %>)
+          </div>
+        </header>
+        <div class="card-content">
+          <% if @user_attendances.any? %>
+            <% @user_attendances.limit(5).each do |attendance| %>
+              <% event = attendance.event %>
+              <div class="box">
+                <div class="level">
+                  <div class="level-left">
+                    <div>
+                      <p class="title is-6">
+                        <%= link_to event.title, admin_event_path(event), class: "has-text-info" %>
+                      </p>
+                      <div class="tags">
+                        <span class="tag <%= attendance.status_badge_class %>">
+                          <%= attendance.status_text %>
+                        </span>
+                        <span class="tag is-info"><%= event.start_date.strftime("%d/%m/%Y") %></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="level-right">
+                    <%= link_to admin_event_path(event), class: "button is-small is-info" do %>
+                      <span class="icon is-small">
+                        <i class="fas fa-eye"></i>
+                      </span>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+            <% if @user_attendances.count > 5 %>
+              <p class="has-text-centered">
+                <em>et <%= @user_attendances.count - 5 %> autres participations...</em>
+              </p>
+            <% end %>
+          <% else %>
+            <p class="has-text-grey has-text-centered">Aucune participation</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

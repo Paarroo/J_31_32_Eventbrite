@@ -1,0 +1,216 @@
+/* Styles spécifiques pour la zone admin */
+
+.admin-dashboard {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+}
+
+.stat-card {
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.admin-table {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.admin-table .table {
+  margin-bottom: 0;
+}
+
+.admin-table .table th {
+  background-color: #f8f9fa;
+  border: none;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  color: #6c757d;
+}
+
+.admin-table .table td {
+  border: none;
+  border-top: 1px solid #e9ecef;
+  vertical-align: middle;
+}
+
+.admin-table .table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* Boutons admin */
+.btn-admin-primary {
+  background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.btn-admin-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+}
+
+/* Status badges */
+.status-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0.375rem 0.75rem;
+  border-radius: 50px;
+}
+
+.status-validated {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status-rejected {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* Validation form */
+.validation-form {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e9ecef;
+}
+
+.validation-form .form-control:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+/* Responsive design pour admin */
+@media (max-width: 768px) {
+  .admin-sidebar {
+    position: fixed;
+    top: 0;
+    left: -250px;
+    width: 250px;
+    height: 100vh;
+    transition: left 0.3s ease;
+    z-index: 1000;
+  }
+
+  .admin-sidebar.is-open {
+    left: 0;
+  }
+
+  .admin-main {
+    margin-left: 0;
+  }
+
+  .admin-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: none;
+  }
+
+  .admin-overlay.is-active {
+    display: block;
+  }
+}
+
+/* Animation de chargement */
+.loading-spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Cards admin améliorées */
+.admin-card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.admin-card:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.admin-card .card-header {
+  border-bottom: 1px solid #e9ecef;
+  background: linear-gradient(45deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+/* Dashboard grid */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* Progress bars */
+.admin-progress {
+  height: 8px;
+  border-radius: 4px;
+  background-color: #e9ecef;
+  overflow: hidden;
+}
+
+.admin-progress-bar {
+  height: 100%;
+  background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+  transition: width 0.3s ease;
+}
+
+/* Notifications admin */
+.admin-notification {
+  border-radius: 8px;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.admin-notification.is-success {
+  background: linear-gradient(45deg, #d4edda 0%, #c3e6cb 100%);
+  color: #155724;
+}
+
+.admin-notification.is-warning {
+  background: linear-gradient(45deg, #fff3cd 0%, #ffeaa7 100%);
+  color: #856404;
+}
+
+.admin-notification.is-danger {
+  background: linear-gradient(45deg, #f8d7da 0%, #f5c6cb 100%);
+  color: #721c24;
+}

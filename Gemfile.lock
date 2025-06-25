@@ -44,6 +44,16 @@ GEM
       erubi (~> 1.11)
       rails-dom-testing (~> 2.2)
       rails-html-sanitizer (~> 1.6)
+    activeadmin (3.3.0)
+      arbre (~> 1.2, >= 1.2.1)
+      csv
+      formtastic (>= 3.1)
+      formtastic_i18n (>= 0.4)
+      inherited_resources (~> 1.7)
+      jquery-rails (>= 4.2)
+      kaminari (>= 1.2.1)
+      railties (>= 6.1)
+      ransack (>= 4.0)
     activejob (8.0.2)
       activesupport (= 8.0.2)
       globalid (>= 0.3.6)
@@ -74,10 +84,15 @@ GEM
       uri (>= 0.13.1)
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
+    amazing_print (1.8.1)
     annotate (2.6.5)
       activerecord (>= 2.3.0)
       rake (>= 0.8.7)
+    arbre (1.7.0)
+      activesupport (>= 3.0.0)
+      ruby2_keywords (>= 0.0.2)
     ast (2.4.3)
+    awesome_print (1.9.2)
     base64 (0.3.0)
     bcrypt (3.1.20)
     bcrypt_pbkdf (1.1.1)
@@ -90,11 +105,15 @@ GEM
     bindex (0.8.1)
     binding_of_caller (1.0.1)
       debug_inspector (>= 1.2.0)
+    boot (0.0.1)
     bootsnap (1.18.6)
       msgpack (~> 1.2)
     brakeman (7.0.2)
       racc
     builder (3.3.0)
+    bullet (8.0.8)
+      activesupport (>= 3.0.0)
+      uniform_notifier (~> 1.11)
     byebug (12.0.0)
     capybara (3.40.0)
       addressable
@@ -107,9 +126,13 @@ GEM
       xpath (~> 3.2)
     childprocess (5.1.0)
       logger (~> 1.5)
+    choice (0.2.0)
+    coderay (1.1.3)
+    colorize (1.1.0)
     concurrent-ruby (1.3.5)
     connection_pool (2.5.3)
     crass (1.0.6)
+    csv (3.3.5)
     date (3.4.1)
     debug (1.10.0)
       irb (~> 1.10)
@@ -122,12 +145,19 @@ GEM
       responders
       warden (~> 1.2.3)
     dotenv (3.1.8)
+    dotenv-rails (3.1.8)
+      dotenv (= 3.1.8)
+      railties (>= 6.1)
     drb (2.2.3)
     ed25519 (1.4.0)
+    em-websocket (0.5.3)
+      eventmachine (>= 0.12.9)
+      http_parser.rb (~> 0)
     erb (5.0.1)
     erubi (1.13.1)
     et-orbi (1.2.11)
       tzinfo
+    eventmachine (1.2.7)
     ffi (1.17.2-aarch64-linux-gnu)
     ffi (1.17.2-aarch64-linux-musl)
     ffi (1.17.2-arm-linux-gnu)
@@ -135,13 +165,57 @@ GEM
     ffi (1.17.2-arm64-darwin)
     ffi (1.17.2-x86_64-linux-gnu)
     ffi (1.17.2-x86_64-linux-musl)
+    formatador (1.1.0)
+    formtastic (5.0.0)
+      actionpack (>= 6.0.0)
+    formtastic_i18n (0.7.0)
     fugit (1.11.1)
       et-orbi (~> 1, >= 1.2.11)
       raabro (~> 1.4)
     globalid (1.2.1)
       activesupport (>= 6.1)
+    guard (2.19.1)
+      formatador (>= 0.2.4)
+      listen (>= 2.7, < 4.0)
+      logger (~> 1.6)
+      lumberjack (>= 1.0.12, < 2.0)
+      nenv (~> 0.1)
+      notiffany (~> 0.0)
+      ostruct (~> 0.6)
+      pry (>= 0.13.0)
+      shellany (~> 0.0)
+      thor (>= 0.18.1)
+    guard-compat (1.2.1)
+    guard-livereload (2.5.2)
+      em-websocket (~> 0.5)
+      guard (~> 2.8)
+      guard-compat (~> 1.0)
+      multi_json (~> 1.8)
+    guard-rails (0.8.1)
+      guard (~> 2.11)
+      guard-compat (~> 1.0)
+    has_scope (0.8.2)
+      actionpack (>= 5.2)
+      activesupport (>= 5.2)
+    highline (3.1.2)
+      reline
+    hirb (0.7.3)
+    http_parser.rb (0.8.0)
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)
+    i18n-debug (1.2.0)
+      i18n (< 2)
+    i18n-tasks (1.0.15)
+      activesupport (>= 4.0.2)
+      ast (>= 2.1.0)
+      erubi
+      highline (>= 2.0.0)
+      i18n
+      parser (>= 3.2.2.1)
+      rails-i18n
+      rainbow (>= 2.2.2, < 4.0)
+      ruby-progressbar (~> 1.8, >= 1.8.1)
+      terminal-table (>= 1.5.1)
     image_processing (1.14.0)
       mini_magick (>= 4.9.5, < 6)
       ruby-vips (>= 2.0.17, < 3)
@@ -149,6 +223,11 @@ GEM
       actionpack (>= 6.0.0)
       activesupport (>= 6.0.0)
       railties (>= 6.0.0)
+    inherited_resources (1.14.0)
+      actionpack (>= 6.0)
+      has_scope (>= 0.6)
+      railties (>= 6.0)
+      responders (>= 2)
     io-console (0.8.0)
     irb (1.15.2)
       pp (>= 0.6.0)
@@ -173,6 +252,18 @@ GEM
       sshkit (>= 1.23.0, < 2.0)
       thor (~> 1.3)
       zeitwerk (>= 2.6.18, < 3.0)
+    kaminari (1.2.2)
+      activesupport (>= 4.1.0)
+      kaminari-actionview (= 1.2.2)
+      kaminari-activerecord (= 1.2.2)
+      kaminari-core (= 1.2.2)
+    kaminari-actionview (1.2.2)
+      actionview
+      kaminari-core (= 1.2.2)
+    kaminari-activerecord (1.2.2)
+      activerecord
+      kaminari-core (= 1.2.2)
+    kaminari-core (1.2.2)
     language_server-protocol (3.17.0.5)
     launchy (3.1.1)
       addressable (~> 2.8)
@@ -181,10 +272,19 @@ GEM
     letter_opener (1.10.0)
       launchy (>= 2.2, < 4)
     lint_roller (1.1.0)
+    listen (3.9.0)
+      rb-fsevent (~> 0.10, >= 0.10.3)
+      rb-inotify (~> 0.9, >= 0.9.10)
     logger (1.7.0)
+    lograge (0.14.0)
+      actionpack (>= 4)
+      activesupport (>= 4)
+      railties (>= 4)
+      request_store (~> 1.0)
     loofah (2.24.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
+    lumberjack (1.2.10)
     mail (2.8.1)
       mini_mime (>= 0.1.1)
       net-imap
@@ -192,12 +292,18 @@ GEM
       net-smtp
     marcel (1.0.4)
     matrix (0.4.2)
+    meta_request (0.8.5)
+      rack-contrib (>= 1.1, < 3)
+      railties (>= 3.0.0, < 9)
+    method_source (1.1.0)
     mini_magick (5.2.0)
       benchmark
       logger
     mini_mime (1.1.5)
     minitest (5.25.5)
     msgpack (1.8.0)
+    multi_json (1.15.0)
+    nenv (0.3.0)
     net-imap (0.5.8)
       date
       net-protocol
@@ -227,6 +333,9 @@ GEM
       racc (~> 1.4)
     nokogiri (1.18.8-x86_64-linux-musl)
       racc (~> 1.4)
+    notiffany (0.1.3)
+      nenv (~> 0.1)
+      shellany (~> 0.0)
     orm_adapter (0.5.0)
     ostruct (0.6.1)
     parallel (1.27.0)
@@ -243,6 +352,14 @@ GEM
       activesupport (>= 7.0.0)
       rack
       railties (>= 7.0.0)
+    pry (0.15.2)
+      coderay (~> 1.1)
+      method_source (~> 1.0)
+    pry-byebug (3.11.0)
+      byebug (~> 12.0)
+      pry (>= 0.13, < 0.16)
+    pry-rails (0.3.11)
+      pry (>= 0.13.0)
     psych (5.2.6)
       date
       stringio
@@ -252,6 +369,10 @@ GEM
     raabro (1.4.0)
     racc (1.8.1)
     rack (3.1.16)
+    rack-contrib (2.5.0)
+      rack (< 4)
+    rack-livereload (0.6.1)
+      rack (>= 3.0, < 3.2)
     rack-session (2.1.1)
       base64 (>= 0.1.0)
       rack (>= 3.0.0)
@@ -277,9 +398,23 @@ GEM
       activesupport (>= 5.0.0)
       minitest
       nokogiri (>= 1.6)
+    rails-erd (1.7.2)
+      activerecord (>= 4.2)
+      activesupport (>= 4.2)
+      choice (~> 0.2.0)
+      ruby-graphviz (~> 1.2)
     rails-html-sanitizer (1.6.2)
       loofah (~> 2.21)
       nokogiri (>= 1.15.7, != 1.16.7, != 1.16.6, != 1.16.5, != 1.16.4, != 1.16.3, != 1.16.2, != 1.16.1, != 1.16.0.rc1, != 1.16.0)
+    rails-i18n (8.0.1)
+      i18n (>= 0.7, < 2)
+      railties (>= 8.0.0, < 9)
+    rails_panel (0.0.1)
+    rails_semantic_logger (4.17.0)
+      rack
+      railties (>= 5.1)
+      semantic_logger (~> 4.16)
+    rails_stdout_logging (0.0.5)
     railties (8.0.2)
       actionpack (= 8.0.2)
       activesupport (= 8.0.2)
@@ -290,12 +425,23 @@ GEM
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
     rake (13.3.0)
+    ransack (4.3.0)
+      activerecord (>= 6.1.5)
+      activesupport (>= 6.1.5)
+      i18n
+    rb-fsevent (0.11.2)
+    rb-inotify (0.11.1)
+      ffi (~> 1.0)
     rdoc (6.14.0)
       erb
       psych (>= 4.0.0)
     regexp_parser (2.10.0)
     reline (0.6.1)
       io-console (~> 0.5)
+    request_store (1.7.0)
+      rack (>= 1.4)
+    rerun (0.14.0)
+      listen (~> 3.0)
     responders (3.1.1)
       actionpack (>= 5.2)
       railties (>= 5.2)
@@ -329,11 +475,24 @@ GEM
       rubocop (>= 1.72)
       rubocop-performance (>= 1.24)
       rubocop-rails (>= 2.30)
+    ruby-graphviz (1.2.5)
+      rexml
     ruby-progressbar (1.13.0)
     ruby-vips (2.2.4)
       ffi (~> 1.12)
       logger
+    ruby2_keywords (0.0.5)
     rubyzip (2.4.1)
+    sass-rails (6.0.0)
+      sassc-rails (~> 2.1, >= 2.1.1)
+    sassc (2.4.0)
+      ffi (~> 1.9)
+    sassc-rails (2.1.2)
+      railties (>= 4.0.0)
+      sassc (>= 2.0)
+      sprockets (> 3.0)
+      sprockets-rails
+      tilt
     securerandom (0.4.1)
     selenium-webdriver (4.33.0)
       base64 (~> 0.2)
@@ -341,6 +500,9 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
+    semantic_logger (4.16.1)
+      concurrent-ruby (~> 1.0)
+    shellany (0.0.1)
     solid_cable (3.0.8)
       actioncable (>= 7.2)
       activejob (>= 7.2)
@@ -357,6 +519,18 @@ GEM
       fugit (~> 1.11.0)
       railties (>= 7.1)
       thor (~> 1.3.1)
+    spring (4.3.0)
+    spring-watcher-listen (2.1.0)
+      listen (>= 2.7, < 4.0)
+      spring (>= 4)
+    sprockets (4.2.2)
+      concurrent-ruby (~> 1.0)
+      logger
+      rack (>= 2.2.4, < 4)
+    sprockets-rails (3.5.2)
+      actionpack (>= 6.1)
+      activesupport (>= 6.1)
+      sprockets (>= 3.0.0)
     sshkit (1.24.0)
       base64
       logger
@@ -367,12 +541,23 @@ GEM
     stimulus-rails (1.3.4)
       railties (>= 6.0.0)
     stringio (3.1.7)
+    stripe (15.2.1)
+    table_print (1.5.7)
+    terminal-table (4.0.0)
+      unicode-display_width (>= 1.1.1, < 4)
     thor (1.3.2)
     thruster (0.1.13)
     thruster (0.1.13-aarch64-linux)
     thruster (0.1.13-arm64-darwin)
     thruster (0.1.13-x86_64-linux)
+    tilt (2.6.0)
     timeout (0.4.3)
+    tty-cursor (0.7.1)
+    tty-progressbar (0.11.0)
+      tty-screen (~> 0.5.0)
+    tty-screen (0.5.1)
+    tty-spinner (0.9.3)
+      tty-cursor (~> 0.7)
     turbo-rails (2.0.16)
       actionpack (>= 7.1.0)
       railties (>= 7.1.0)
@@ -381,6 +566,7 @@ GEM
     unicode-display_width (3.1.4)
       unicode-emoji (~> 4.0, >= 4.0.4)
     unicode-emoji (4.0.4)
+    uniform_notifier (1.17.0)
     uri (1.0.3)
     useragent (0.16.11)
     warden (1.2.9)
@@ -411,32 +597,66 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
+  activeadmin
+  amazing_print
   annotate
+  awesome_print
+  bcrypt (~> 3.1.7)
   better_errors
   binding_of_caller
+  boot
   bootsnap
   brakeman
+  bullet
   byebug
   capybara
+  colorize
   debug
   devise
+  dotenv-rails
+  guard
+  guard-livereload
+  guard-rails
+  hirb
+  i18n-debug
+  i18n-tasks
   image_processing
   importmap-rails
   jbuilder
   jquery-rails
   kamal
   letter_opener
+  listen
+  lograge
+  meta_request
   pg (~> 1.1)
   propshaft
+  pry-byebug
+  pry-rails
   puma (>= 5.0)
+  rack-livereload
   rails (~> 8.0.2)
+  rails-erd
+  rails-i18n
+  rails_panel
+  rails_semantic_logger
+  rails_stdout_logging
+  rainbow
+  rerun
   rubocop-rails-omakase
+  sass-rails (>= 6)
   selenium-webdriver
   solid_cable
   solid_cache
   solid_queue
+  spring
+  spring-watcher-listen
   stimulus-rails
+  stripe
+  table_print
   thruster
+  tty-progressbar
+  tty-spinner
   turbo-rails
   tzinfo-data
   web-console

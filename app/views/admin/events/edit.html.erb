@@ -1,0 +1,142 @@
+<div class="container">
+  <div class="mb-6">
+    <%= link_to admin_event_path(@event), class: "button is-light" do %>
+      <span class="icon">
+        <i class="fas fa-arrow-left"></i>
+      </span>
+      <span>Retour à l'événement</span>
+    <% end %>
+  </div>
+
+  <div class="card">
+    <header class="card-header">
+      <div class="card-header-title">
+        <h1 class="title is-3">
+          <span class="icon mr-3 has-text-warning">
+            <i class="fas fa-edit"></i>
+          </span>
+          Modifier l'événement
+        </h1>
+      </div>
+    </header>
+
+    <div class="card-content">
+      <%= form_with(model: [@event], url: admin_event_path(@event), method: :patch, local: true) do |form| %>
+        <!-- Affichage des erreurs s'il y en a -->
+        <% if @event.errors.any? %>
+          <div class="notification is-danger">
+            <h4><%= pluralize(@event.errors.count, "erreur") %> empêche la sauvegarde :</h4>
+            <ul>
+              <% @event.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="columns">
+          <div class="column is-8">
+            <!-- Informations principales -->
+            <div class="field">
+              <label class="label">Titre *</label>
+              <div class="control">
+                <%= form.text_field :title, class: "input", placeholder: "Titre de l'événement", required: true %>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label">Description *</label>
+              <div class="control">
+                <%= form.text_area :description, class: "textarea", rows: 8, placeholder: "Description complète de l'événement", required: true %>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label">Lieu *</label>
+              <div class="control">
+                <%= form.text_field :location, class: "input", placeholder: "Adresse ou lieu de l'événement", required: true %>
+              </div>
+            </div>
+
+            <div class="columns">
+              <div class="column">
+                <div class="field">
+                  <label class="label">Date et heure *</label>
+                  <div class="control">
+                    <%= form.datetime_local_field :start_date, class: "input", required: true %>
+                  </div>
+                </div>
+              </div>
+
+              <div class="column">
+                <div class="field">
+                  <label class="label">Durée (minutes) *</label>
+                  <div class="control">
+                    <%= form.number_field :duration, class: "input", min: 30, max: 1440, step: 15, required: true %>
+                  </div>
+                  <p class="help">Entre 30 minutes et 24h maximum</p>
+                </div>
+              </div>
+
+              <div class="column">
+                <div class="field">
+                  <label class="label">Prix (€) *</label>
+                  <div class="control">
+                    <%= form.number_field :price, class: "input", min: 0, step: 0.01, required: true %>
+                  </div>
+                  <p class="help">Gratuit = 0.00€</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="column is-4">
+            <!-- Statut de validation (réservé admin) -->
+            <div class="box has-background-light">
+              <h4 class="title is-6">🛡️ Administration</h4>
+
+              <div class="field">
+                <label class="label">Statut de validation</label>
+                <div class="control">
+                  <div class="select is-fullwidth">
+                    <%= form.select :validated,
+                        options_for_select([
+                          ['✅ Validé', true],
+                          ['⏳ En attente', nil],
+                          ['❌ Refusé', false]
+                        ], @event.validated),
+                        {},
+                        { class: 'select' } %>
+                  </div>
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="label">Commentaire admin</label>
+                <div class="control">
+                  <%= form.text_area :admin_comment, class: "textarea", rows: 4, placeholder: "Commentaire pour l'organisateur..." %>
+                </div>
+                <p class="help">Visible par l'organisateur</p>
+              </div>
+
+              <div class="notification is-info is-light">
+                <p class="is-size-7">
+                  <strong>ℹ️ Note :</strong> Modifier le statut ou le commentaire enverra une notification à l'organisateur.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Boutons d'action -->
+        <div class="field is-grouped is-grouped-right">
+          <%= link_to admin_event_path(@event), class: "button is-light" do %>
+            Annuler
+          <% end %>
+
+          <%= form.submit "Sauvegarder les modifications", class: "button is-warning" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

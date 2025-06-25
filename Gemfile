@@ -18,7 +18,7 @@ gem "stimulus-rails"
 gem "jbuilder"
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
-# gem "bcrypt", "~> 3.1.7"
+gem "bcrypt", "~> 3.1.7"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
@@ -62,19 +62,95 @@ group :test do
   gem "selenium-webdriver"
 end
 
+#################################
+gem 'sass-rails', '>= 6'
+
+
+gem 'devise'
+
+gem 'stripe'
+
+gem 'activeadmin'
+
+gem 'dotenv-rails', groups: [ :development, :test ]
+
+gem 'image_processing'
+
+gem 'jquery-rails'
+
+gem 'rails-i18n'
+gem 'i18n-tasks', group: :development
+group :development do
+  gem 'i18n-debug'
+end
+
+
+
+###############################
 
 
 
 group :development do
-  gem 'better_errors'
-  gem 'binding_of_caller'
-  gem 'byebug'
+  # === AUTO-RESTART SERVEUR ===
+  gem 'rerun'            # rerun -- rails server
+  gem 'guard'           # Surveillance avancée des fichiers
+  gem 'guard-rails'     # Guard spécifique pour Rails
+  gem 'guard-livereload' # Recharge la page automatiquement
+
+  # === SURVEILLANCE FICHIERS ===
+  gem 'listen'          # Surveillance efficace des changements
+  gem 'spring'          # Préchargement Rails (inclus par défaut Rails 8)
+  gem 'spring-watcher-listen' # Spring + Listen pour surveillance
+
+  # === AUTO-RELOAD NAVIGATEUR ===
+  gem 'rack-livereload' # Recharge automatique du navigateur
+
+  # === BEAUTIFUL TERMINAL ===
+  gem 'colorize'        # Couleurs dans le terminal
+  gem 'rainbow'         # Alternative à colorize
+  gem 'tty-spinner'     # Spinners animés dans le terminal
+  gem 'tty-progressbar' # Barres de progression
+
+  # === BETTER RAILS CONSOLE ===
+  gem 'pry-rails'       # Console Rails améliorée (remplace IRB)
+  gem 'pry-byebug'      # Debugger intégré à Pry
+  gem 'awesome_print'   # Pretty print des objets Ruby
+  gem 'hirb'            # Tables formatées dans la console
+
+  # === BETTER ERROR PAGES ===
+  gem 'better_errors'   # Pages d'erreur magnifiques
+  gem 'binding_of_caller' # Requis pour better_errors
+  gem 'byebug', platforms: [ :mri, :mingw, :x64_mingw ]
+  gem "letter_opener"
+
+  # === RAILS PANEL ===
+  gem 'rails_panel'     # Extension Chrome pour Rails
+  gem 'meta_request'    # Requis pour rails_panel
 end
 
+group :development do
+  # === BEAUTIFUL LOGS ===
+  gem 'rails_semantic_logger' # Logs structurés et colorés
+  gem 'amazing_print'          # Pretty print amélioré
+  gem 'rails_stdout_logging'   # Logs vers STDOUT (Heroku)
 
-gem 'image_processing'
+  # === LOG ANALYSIS ===
+  gem 'lograge'         # Logs Rails en une ligne
+end
 
- gem 'annotate'     # rails g annotate:install
- gem "letter_opener", group: :development
-gem 'devise'
-gem 'jquery-rails'
+group :development, :test do
+  # === DEBUGGING LOGS ===
+  gem 'table_print'     # Affichage en tableaux
+end
+
+# === PRODUCTION MONITORING (utile à connaître) ===
+group :production do
+  # gem 'newrelic_rpm'     # New Relic monitoring
+  # gem 'sentry-ruby'      # Error tracking
+  # gem 'honeybadger'      # Alternative à Sentry
+end
+
+gem 'rails-erd'
+gem 'bullet'
+gem 'annotate'  # rails g annotate:install
+gem "boot"

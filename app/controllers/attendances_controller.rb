@@ -1,70 +1,57 @@
+# Contrôleur pour les inscriptions gratuites
 class AttendancesController < ApplicationController
-  before_action :set_attendance, only: %i[ show edit update destroy ]
+  before_action :authenticate_user!
+  before_action :set_event, only: [ :create, :destroy ]
+  before_action :set_attendance, only: [ :destroy ]
 
-  # GET /attendances or /attendances.json
-  def index
-    @attendances = Attendance.all
-  end
-
-  # GET /attendances/1 or /attendances/1.json
-  def show
-  end
-
-  # GET /attendances/new
-  def new
-    @attendance = Attendance.new
-  end
-
-  # GET /attendances/1/edit
-  def edit
-  end
-
-  # POST /attendances or /attendances.json
+  # POST /events/:event_id/attendances (pour événements gratuits)
   def create
-    @attendance = Attendance.new(attendance_params)
+    if @event.user == current_user
+      redirect_to @event, alert: "Vous ne pouvez pas vous inscrire à votre propre événement."
+      return
+    end
 
-    respond_to do |format|
-      if @attendance.save
-        format.html { redirect_to @attendance, notice: "Attendance was successfully created." }
-        format.json { render :show, status: :created, location: @attendance }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @attendance.errors, status: :unprocessable_entity }
-      end
+    if @event.participants.include?(current_user)
+      redirect_to @event, alert: "Vous participez déjà à cet événement."
+      return
+    end
+
+    unless @event.free?
+      redirect_to new_event_payment_path(@event), notice: "Cet événement est payant."
+      return
+    end
+
+    @attendance = Attendance.new(
+      user: current_user,
+      event: @event,
+      payment_status: 'free'
+    )
+
+    if @attendance.save
+      redirect_to @event, notice: "🎉 Inscription confirmée !"
+    else
+      redirect_to @event, alert: "Erreur lors de l'inscription : #{@attendance.errors.full_messages.join(', ')}"
     end
   end
 
-  # PATCH/PUT /attendances/1 or /attendances/1.json
-  def update
-    respond_to do |format|
-      if @attendance.update(attendance_params)
-        format.html { redirect_to @attendance, notice: "Attendance was successfully updated." }
-        format.json { render :show, status: :ok, location: @attendance }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @attendance.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # DELETE /attendances/1 or /attendances/1.json
+  # DELETE /events/:event_id/attendances/:id
   def destroy
-    @attendance.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to attendances_path, status: :see_other, notice: "Attendance was successfully destroyed." }
-      format.json { head :no_content }
+    unless @attendance.user == current_user
+      redirect_to @attendance.event, alert: "Vous ne pouvez pas annuler cette participation."
+      return
     end
+
+    @attendance.destroy!
+    redirect_to @attendance.event, notice: "✅ Votre inscription a été annulée."
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_attendance
-      @attendance = Attendance.find(params.expect(:id))
-    end
 
-    # Only allow a list of trusted parameters through.
-    def attendance_params
-      params.expect(attendance: [ :stripe_customer_id, :user_id, :event_id ])
-    end
+  def set_event
+    @event = Event.find(params[:event_id])
+  end
+
+  def set_attendance
+    @attendance = current_user.attendances.find(params[:id])
+  end
 end

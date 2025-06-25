@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Admin - Eventbrite</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload" %>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+      .admin-sidebar {
+        background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+      }
+      .admin-sidebar .menu-label {
+        color: rgba(255,255,255,0.8);
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+      }
+      .admin-sidebar .menu-list a {
+        color: rgba(255,255,255,0.9);
+        border-radius: 6px;
+        margin-bottom: 4px;
+      }
+      .admin-sidebar .menu-list a:hover,
+      .admin-sidebar .menu-list a.is-active {
+        background-color: rgba(255,255,255,0.1);
+        color: white;
+      }
+      .admin-main {
+        background-color: #f8f9fa;
+        min-height: 100vh;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="columns is-gapless">
+      <!-- Sidebar Admin -->
+      <div class="column is-2 admin-sidebar">
+        <div class="p-4">
+          <!-- Logo/Titre Admin -->
+          <div class="has-text-centered mb-5">
+            <h1 class="title is-4 has-text-white">
+              <span class="icon mr-2">
+                <i class="fas fa-cog"></i>
+              </span>
+              Admin Panel
+            </h1>
+            <p class="subtitle is-6 has-text-white-ter">
+              Eventbrite
+            </p>
+          </div>
+
+          <!-- Menu de navigation -->
+          <aside class="menu">
+            <p class="menu-label">Tableau de bord</p>
+            <ul class="menu-list">
+              <li>
+                <%= link_to admin_root_path, class: "#{'is-active' if current_page?(admin_root_path)}" do %>
+                  <span class="icon">
+                    <i class="fas fa-chart-line"></i>
+                  </span>
+                  Dashboard
+                <% end %>
+              </li>
+            </ul>
+
+            <p class="menu-label">Gestion</p>
+            <ul class="menu-list">
+              <li>
+                <%= link_to admin_users_path, class: "#{'is-active' if current_page?(admin_users_path)}" do %>
+                  <span class="icon">
+                    <i class="fas fa-users"></i>
+                  </span>
+                  Utilisateurs
+                  <span class="tag is-light is-small ml-2"><%= User.count %></span>
+                <% end %>
+              </li>
+              <li>
+                <%= link_to admin_events_path, class: "#{'is-active' if current_page?(admin_events_path)}" do %>
+                  <span class="icon">
+                    <i class="fas fa-calendar"></i>
+                  </span>
+                  Événements
+                  <span class="tag is-light is-small ml-2"><%= Event.count %></span>
+                <% end %>
+              </li>
+            </ul>
+
+            <p class="menu-label">Validation</p>
+            <ul class="menu-list">
+              <li>
+                <%= link_to admin_event_submissions_path, class: "#{'is-active' if current_page?(admin_event_submissions_path)}" do %>
+                  <span class="icon">
+                    <i class="fas fa-check-circle"></i>
+                  </span>
+                  Événements à valider
+                  <% pending_count = Event.pending.count %>
+                  <% if pending_count > 0 %>
+                    <span class="tag is-warning is-small ml-2"><%= pending_count %></span>
+                  <% end %>
+                <% end %>
+              </li>
+            </ul>
+
+            <p class="menu-label">Site</p>
+            <ul class="menu-list">
+              <li>
+                <%= link_to root_path do %>
+                  <span class="icon">
+                    <i class="fas fa-home"></i>
+                  </span>
+                  Retour au site
+                <% end %>
+              </li>
+              <li>
+                <%= link_to destroy_user_session_path, method: :delete do %>
+                  <span class="icon">
+                    <i class="fas fa-sign-out-alt"></i>
+                  </span>
+                  Déconnexion
+                <% end %>
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+
+      <!-- Contenu principal -->
+      <div class="column admin-main">
+        <!-- Header admin -->
+        <nav class="level p-5 has-background-white">
+          <div class="level-left">
+            <div class="level-item">
+              <div>
+                <p class="heading">Connecté en tant que</p>
+                <p class="title is-5">
+                  <span class="icon has-text-success">
+                    <i class="fas fa-user-shield"></i>
+                  </span>
+                  <%= current_user.full_name %>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="level-right">
+            <div class="level-item">
+              <div class="buttons">
+                <%= link_to root_path, class: "button is-light" do %>
+                  <span class="icon">
+                    <i class="fas fa-eye"></i>
+                  </span>
+                  <span>Voir le site</span>
+                <% end %>
+                <%= link_to destroy_user_session_path, method: :delete, class: "button is-danger is-outlined" do %>
+                  <span class="icon">
+                    <i class="fas fa-sign-out-alt"></i>
+                  </span>
+                  <span>Déconnexion</span>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </nav>
+
+        <!-- Flash messages -->
+        <div class="px-5">
+          <% if notice %>
+            <div class="notification is-success is-light">
+              <button class="delete"></button>
+              <%= notice %>
+            </div>
+          <% end %>
+
+          <% if alert %>
+            <div class="notification is-danger is-light">
+              <button class="delete"></button>
+              <%= alert %>
+            </div>
+          <% end %>
+        </div>
+
+        <!-- Contenu de la page -->
+        <main class="p-5">
+          <%= yield %>
+        </main>
+      </div>
+    </div>
+
+    <script>
+      // Auto-hide notifications
+      document.addEventListener('DOMContentLoaded', function() {
+        const deleteButtons = document.querySelectorAll('.notification .delete');
+        deleteButtons.forEach(button => {
+          button.addEventListener('click', function() {
+            this.parentElement.remove();
+          });
+        });
+
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+          const notifications = document.querySelectorAll('.notification');
+          notifications.forEach(notification => {
+            notification.style.opacity = '0';
+            setTimeout(() => notification.remove(), 300);
+          });
+        }, 5000);
+      });
+    </script>
+  </body>
+</html>

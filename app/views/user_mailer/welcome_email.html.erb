@@ -1,14 +1,36 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-  </head>
-  <body>
-    <h1>Bienvenue <%= @user.first_name %> !</h1>
-    <p>
-      Merci de vous être inscrit sur notre plateforme Eventbrite.
-      Vous pouvez maintenant créer des événements et participer à ceux des autres !
-    </p>
-    <p>À bientôt !</p>
-  </body>
-</html>
+<h2>Salut <%= @user.first_name || @user.name %> ! 👋</h2>
+
+<p>Bienvenue sur <strong><%= @app_name %></strong> !</p>
+
+<p>
+  Nous sommes ravis de t'accueillir dans notre communauté.
+  Ton compte a été créé avec succès avec l'adresse email :
+  <strong><%= @user.email %></strong>
+</p>
+
+<div style="text-align: center; margin: 30px 0;">
+  <a href="<%= @login_url %>" class="button">
+    🚀 Connecte-toi maintenant
+  </a>
+</div>
+
+<h3>Prochaines étapes :</h3>
+<ul>
+  <li>Complète ton profil</li>
+  <li>Explore les fonctionnalités</li>
+  <li>Rejoins la communauté</li>
+</ul>
+
+<p>
+  Si tu as des questions, n'hésite pas à nous contacter à
+  <a href="mailto:<%= @support_email %>"><%= @support_email %></a>
+</p>
+
+<p>À très bientôt sur <%= @app_name %> ! 🎉</p>
+
+<% if Rails.env.development? %>
+  <div style="background-color: #fff3cd; padding: 15px; margin: 20px 0; border-left: 4px solid #ffc107;">
+    <strong>Mode développement :</strong> Cet email ne sera pas envoyé en vrai.
+    <br>Utilisateur ID: <%= @user.id %> | Créé le: <%= @user.created_at %>
+  </div>
+<% end %>

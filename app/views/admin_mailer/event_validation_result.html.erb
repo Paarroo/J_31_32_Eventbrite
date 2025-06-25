@@ -1,0 +1,73 @@
+<h2>
+  <% if @validated %>
+    ✅ Bonne nouvelle ! Votre événement a été validé
+  <% else %>
+    ❌ Votre événement nécessite des modifications
+  <% end %>
+</h2>
+
+<p>Bonjour <%= @user.first_name %>,</p>
+
+<% if @validated %>
+  <p>
+    Nous avons le plaisir de vous informer que votre événement
+    <strong><%= @event.title %></strong> a été validé par notre équipe.
+  </p>
+
+  <p>
+    Votre événement est maintenant visible sur la plateforme et les utilisateurs
+    peuvent s'y inscrire !
+  </p>
+
+  <div style="text-align: center; margin: 30px 0;">
+    <a href="<%= event_url(@event) %>" class="button">
+      🎉 Voir mon événement en ligne
+    </a>
+  </div>
+<% else %>
+  <p>
+    Nous avons examiné votre événement <strong><%= @event.title %></strong>,
+    mais il ne peut pas être publié dans sa forme actuelle.
+  </p>
+
+  <% if @comment.present? %>
+    <div style="background-color: #fff3cd; padding: 15px; margin: 20px 0; border-left: 4px solid #ffc107;">
+      <strong>Commentaire de l'équipe :</strong>
+      <p><%= simple_format(@comment) %></p>
+    </div>
+  <% end %>
+
+  <p>
+    Vous pouvez modifier votre événement et le soumettre à nouveau pour validation.
+  </p>
+
+  <div style="text-align: center; margin: 30px 0;">
+    <a href="<%= edit_event_url(@event) %>" class="button">
+      ✏️ Modifier mon événement
+    </a>
+  </div>
+<% end %>
+
+<h3>Détails de l'événement :</h3>
+<ul>
+  <li><strong>Titre :</strong> <%= @event.title %></li>
+  <li><strong>Date :</strong> <%= @event.start_date.strftime("%d/%m/%Y à %H:%M") %></li>
+  <li><strong>Lieu :</strong> <%= @event.location %></li>
+  <li><strong>Prix :</strong> <%= @event.price %>€</li>
+</ul>
+
+<% if @validated %>
+  <p>
+    Nous vous souhaitons un franc succès pour votre événement !
+  </p>
+<% else %>
+  <p>
+    N'hésitez pas à nous contacter si vous avez des questions concernant
+    les modifications à apporter.
+  </p>
+<% end %>
+
+<p>
+  Cordialement,<br>
+  L'équipe Eventbrite
+</p>

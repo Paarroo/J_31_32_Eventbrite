@@ -1,0 +1,156 @@
+<!-- app/views/payments/success.html.erb -->
+<section class="section">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-6">
+        <% if @payment_success %>
+          <!-- Succès du paiement -->
+          <div class="card">
+            <header class="card-header has-background-success">
+              <div class="card-header-title is-centered">
+                <h1 class="title is-3 has-text-white">
+                  <span class="icon mr-3">
+                    <i class="fas fa-check-circle"></i>
+                  </span>
+                  Paiement confirmé !
+                </h1>
+              </div>
+            </header>
+
+            <div class="card-content has-text-centered">
+              <div class="content">
+                <!-- Animation de succès -->
+                <div class="mb-5">
+                  <span class="icon is-large has-text-success">
+                    <i class="fas fa-check-circle fa-4x"></i>
+                  </span>
+                </div>
+
+                <h2 class="title is-4">🎉 Félicitations !</h2>
+                <p class="subtitle">Votre inscription à l'événement est confirmée</p>
+
+                <!-- Détails de l'événement -->
+                <div class="box has-background-light">
+                  <h3 class="title is-5 mb-3">
+                    <span class="icon has-text-primary">
+                      <i class="fas fa-calendar"></i>
+                    </span>
+                    <%= @event.title %>
+                  </h3>
+
+                  <div class="tags is-centered">
+                    <span class="tag is-info is-medium">
+                      <span class="icon">
+                        <i class="fas fa-calendar-day"></i>
+                      </span>
+                      <span><%= @event.start_date.strftime("%d %B %Y") %></span>
+                    </span>
+                    <span class="tag is-primary is-medium">
+                      <span class="icon">
+                        <i class="fas fa-clock"></i>
+                      </span>
+                      <span><%= @event.start_date.strftime("%H:%M") %></span>
+                    </span>
+                    <span class="tag is-warning is-medium">
+                      <span class="icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                      </span>
+                      <span><%= truncate(@event.location, length: 20) %></span>
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Confirmation email -->
+                <div class="notification is-info is-light">
+                  <div class="media">
+                    <div class="media-left">
+                      <span class="icon has-text-info">
+                        <i class="fas fa-envelope fa-lg"></i>
+                      </span>
+                    </div>
+                    <div class="media-content">
+                      <p>
+                        <strong>Email de confirmation envoyé</strong><br>
+                        Un récapitulatif a été envoyé à <strong><%= current_user.email %></strong>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <footer class="card-footer">
+              <%= link_to event_path(@event), class: "card-footer-item has-text-primary has-text-weight-semibold" do %>
+                <span class="icon">
+                  <i class="fas fa-eye"></i>
+                </span>
+                <span>Voir l'événement</span>
+              <% end %>
+
+              <%= link_to events_path, class: "card-footer-item has-text-info has-text-weight-semibold" do %>
+                <span class="icon">
+                  <i class="fas fa-search"></i>
+                </span>
+                <span>Découvrir d'autres événements</span>
+              <% end %>
+            </footer>
+          </div>
+
+        <% else %>
+          <!-- Échec du paiement -->
+          <div class="card">
+            <header class="card-header has-background-danger">
+              <div class="card-header-title is-centered">
+                <h1 class="title is-3 has-text-white">
+                  <span class="icon mr-3">
+                    <i class="fas fa-exclamation-triangle"></i>
+                  </span>
+                  Problème de paiement
+                </h1>
+              </div>
+            </header>
+
+            <div class="card-content has-text-centered">
+              <div class="content">
+                <span class="icon is-large has-text-danger mb-4">
+                  <i class="fas fa-times-circle fa-3x"></i>
+                </span>
+
+                <h2 class="title is-4">❌ Paiement non confirmé</h2>
+                <p class="subtitle">Il y a eu un problème avec votre paiement</p>
+
+                <div class="notification is-warning">
+                  <p><strong>Aucun montant n'a été débité de votre compte.</strong></p>
+                  <p>Vous pouvez réessayer le paiement en toute sécurité.</p>
+                </div>
+
+                <!-- Détails de l'événement -->
+                <div class="box has-background-light">
+                  <h3 class="title is-6 mb-3">Événement : <%= @event.title %></h3>
+                  <p class="has-text-weight-semibold has-text-success">Prix : <%= @event.price %>€</p>
+                </div>
+              </div>
+            </div>
+
+            <footer class="card-footer">
+              <%= link_to new_event_payment_path(@event), class: "card-footer-item has-text-primary has-text-weight-semibold" do %>
+                <span class="icon">
+                  <i class="fas fa-redo"></i>
+                </span>
+                <span>Réessayer le paiement</span>
+              <% end %>
+
+              <%= link_to event_path(@event), class: "card-footer-item has-text-info has-text-weight-semibold" do %>
+                <span class="icon">
+                  <i class="fas fa-arrow-left"></i>
+                </span>
+                <span>Retour à l'événement</span>
+              <% end %>
+            </footer>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</section>

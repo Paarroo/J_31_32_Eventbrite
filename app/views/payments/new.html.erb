@@ -1,0 +1,43 @@
+<section class="section">
+  <div class="container">
+    <h1 class="title">🔍 DEBUG PAIEMENT</h1>
+
+    <div class="content">
+      <p><strong>Événement :</strong> <%= @event.title %></p>
+      <p><strong>Prix :</strong> <%= @event.price %>€</p>
+      <p><strong>Utilisateur :</strong> <%= current_user.email %></p>
+
+      <hr>
+
+      <p><strong>STRIPE_SECRET_KEY présent :</strong> <%= ENV['STRIPE_SECRET_KEY'].present? %></p>
+      <p><strong>STRIPE_PUBLISHABLE_KEY présent :</strong> <%= ENV['STRIPE_PUBLISHABLE_KEY'].present? %></p>
+      <p><strong>@stripe_session présent :</strong> <%= @stripe_session.present? %></p>
+
+      <% if @stripe_session %>
+        <div class="notification is-success">
+          <p><strong>✅ Session ID :</strong> <%= @stripe_session.id %></p>
+          <p><strong>✅ URL Stripe :</strong> <%= @stripe_session.url %></p>
+
+          <div class="mt-4">
+            <%= link_to @stripe_session.url, class: "button is-primary is-large" do %>
+              🚀 ALLER SUR STRIPE
+            <% end %>
+          </div>
+        </div>
+      <% else %>
+        <div class="notification is-danger">
+          <p>❌ Aucune session Stripe créée - PROBLÈME DANS LE CONTRÔLEUR</p>
+        </div>
+      <% end %>
+
+      <hr>
+
+      <h3>🔧 Debug Stripe API:</h3>
+      <p><strong>Stripe.api_key défini :</strong> <%= Stripe.api_key.present? %></p>
+
+    </div>
+
+    <hr>
+    <%= link_to "Retour", event_path(@event), class: "button is-light" %>
+  </div>
+</section>

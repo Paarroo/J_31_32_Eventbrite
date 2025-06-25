@@ -3,6 +3,7 @@
     <!-- User Profile Card -->
     <div class="card mb-6">
       <div class="card-content has-text-centered">
+        <!-- Avatar avec meilleur espacement -->
         <figure class="image is-128x128 is-inline-block mb-4">
           <span class="has-background-primary has-text-white is-flex is-align-items-center is-justify-content-center"
                 style="width: 128px; height: 128px; border-radius: 50%; font-size: 48px; font-weight: bold;">
@@ -10,98 +11,175 @@
           </span>
         </figure>
 
-        <h1 class="title is-3 mb-5">
-          <%= @user.first_name %> <%= @user.last_name %>
-        </h1>
+        <!-- Titre avec badge admin amélioré -->
+        <div class="mb-4">
+          <h1 class="title is-3 mb-2">
+            <%= @user.first_name %> <%= @user.last_name %>
+          </h1>
+
+          <!-- Badge Admin séparé pour éviter le chevauchement -->
+          <% if @user.admin? %>
+            <div class="mb-2">
+              <span class="tag is-danger is-medium">
+                <span class="icon is-small">
+                  <i class="fas fa-crown"></i>
+                </span>
+                <span>Administrateur</span>
+              </span>
+            </div>
+          <% end %>
+        </div>
 
         <p class="subtitle is-5 has-text-grey mb-4">
           <%= @user.email %>
         </p>
 
         <% if @user.description.present? %>
-          <div class="content">
+          <div class="content mb-4">
             <p><%= @user.description %></p>
           </div>
         <% end %>
 
-        <!-- Profile Actions (si propriétaire) -->
+        <!-- Profile Actions avec meilleure structure responsive -->
         <% if current_user == @user %>
-          <div class="field is-grouped is-grouped-centered mt-5">
-            <%= link_to "Modifier mon profil", edit_user_path(@user),
-                class: "button is-primary" %>
-            <%= link_to "Paramètres", edit_user_registration_path,
-                class: "button is-light" %>
+          <div class="field is-grouped is-grouped-centered is-grouped-multiline mt-5">
+            <div class="control">
+              <%= link_to "Modifier mon profil", edit_user_path(@user),
+                  class: "button is-primary" %>
+            </div>
+            <div class="control">
+              <%= link_to "Paramètres", edit_user_registration_path,
+                  class: "button is-light" %>
+            </div>
+
+            <!-- BOUTON ADMIN avec structure améliorée -->
+            <% if current_user.admin? %>
+              <div class="control">
+                <%= link_to admin_root_path, class: "button is-danger" do %>
+                  <span class="icon">
+                    <i class="fas fa-cog"></i>
+                  </span>
+                  <span>Administration</span>
+                <% end %>
+              </div>
+            <% end %>
           </div>
         <% end %>
       </div>
     </div>
 
-    <div class="columns">
-      <!-- Main Content -->
-      <div class="column is-8">
+    <!-- Structure responsive améliorée avec colonnes -->
+    <div class="columns is-desktop">
+      <!-- Main Content avec largeur adaptative -->
+      <div class="column is-8-desktop is-12-tablet">
         <!-- Événements créés -->
         <div class="card mb-6">
           <header class="card-header">
-            <div class="card-header-title is-flex is-justify-content-space-between" style="width: 100%;">
-              <div>
-                <span class="title is-5">Événements créés</span>
-                <span class="tag is-primary ml-2"><%= @user.events.count %></span>
+            <div class="card-header-title">
+              <div class="is-flex is-justify-content-space-between is-align-items-center" style="width: 100%;">
+                <!-- Zone gauche pour équilibrer -->
+                <div style="width: 8rem;">
+                  <!-- Bouton créer seulement si propriétaire -->
+                  <% if current_user == @user %>
+                    <%= link_to "Créer un événement", new_event_path,
+                        class: "button is-primary is-small" %>
+                  <% end %>
+                </div>
+
+                <!-- Contenu centré (titre) -->
+                <div class="has-text-centered">
+                  <span class="title is-5">Événements créés</span>
+                </div>
+
+                <!-- Compteur à droite -->
+                <span class="tag is-primary"><%= @user.events.count %></span>
               </div>
-              <% if current_user == @user %>
-                <%= link_to "Créer un événement", new_event_path,
-                    class: "button is-primary is-small" %>
-              <% end %>
             </div>
           </header>
 
           <div class="card-content">
             <% if @user.events.any? %>
               <% @user.events.each do |event| %>
-                <div class="box">
-                  <div class="level">
-                    <div class="level-left">
-                      <div>
-                        <h4 class="title is-5 mb-2">
-                          <%= link_to event.title, event_path(event),
-                              class: "has-text-primary" %>
-                        </h4>
-                        <div class="tags">
-                          <span class="tag is-info is-light">
-                            <span class="icon is-small">
-                              <i class="fas fa-calendar"></i>
+                <div class="box mb-4">
+                  <!-- Structure mobile-first pour éviter les chevauchements -->
+                  <div class="is-flex is-flex-direction-column-mobile is-flex-direction-row-tablet is-justify-content-space-between">
+
+                    <!-- Contenu principal de l'événement -->
+                    <div class="is-flex-grow-1 mb-3-mobile mb-0-tablet mr-4-tablet">
+                      <h4 class="title is-5 mb-3">
+                        <%= link_to event.title, event_path(event),
+                            class: "has-text-primary" %>
+                      </h4>
+
+                      <!-- Tags avec wrapping amélioré -->
+                      <div class="tags are-small">
+                        <!-- Statut de validation pour les admins -->
+                        <% if current_user&.admin? %>
+                          <% if event.validated? %>
+                            <span class="tag is-success">
+                              <span class="icon is-small">
+                                <i class="fas fa-check"></i>
+                              </span>
+                              <span>Validé</span>
                             </span>
-                            <span><%= event.start_date.strftime("%d %b %Y") %></span>
-                          </span>
-                          <span class="tag is-light">
-                            <span class="icon is-small">
-                              <i class="fas fa-map-marker-alt"></i>
+                          <% elsif event.rejected? %>
+                            <span class="tag is-danger">
+                              <span class="icon is-small">
+                                <i class="fas fa-times"></i>
+                              </span>
+                              <span>Refusé</span>
                             </span>
-                            <span><%= event.location %></span>
-                          </span>
-                          <span class="tag is-success is-light">
-                            <span class="icon is-small">
-                              <i class="fas fa-users"></i>
+                          <% else %>
+                            <span class="tag is-warning">
+                              <span class="icon is-small">
+                                <i class="fas fa-clock"></i>
+                              </span>
+                              <span>En attente</span>
                             </span>
-                            <span><%= pluralize(event.participants_count, 'participant') %></span>
+                          <% end %>
+                        <% end %>
+
+                        <span class="tag is-info is-light">
+                          <span class="icon is-small">
+                            <i class="fas fa-calendar"></i>
                           </span>
-                        </div>
+                          <span><%= event.start_date.strftime("%d %b %Y") %></span>
+                        </span>
+
+                        <span class="tag is-light">
+                          <span class="icon is-small">
+                            <i class="fas fa-map-marker-alt"></i>
+                          </span>
+                          <span><%= truncate(event.location, length: 20) %></span>
+                        </span>
+
+                        <span class="tag is-success is-light">
+                          <span class="icon is-small">
+                            <i class="fas fa-users"></i>
+                          </span>
+                          <span><%= pluralize(event.confirmed_participants_count, 'participant') %></span>
+                        </span>
                       </div>
                     </div>
 
-                    <div class="level-right">
-                      <div class="has-text-right">
-                        <div class="title is-4 has-text-success mb-2">
-                          <%= event.price %>€
-                        </div>
-                        <% if current_user == @user %>
-                          <div class="field is-grouped">
+                    <!-- Section prix et actions -->
+                    <div class="is-flex is-flex-direction-column is-align-items-center-mobile is-align-items-end-tablet">
+                      <div class="title is-4 has-text-success mb-3">
+                        <%= event.price %>€
+                      </div>
+
+                      <% if current_user == @user %>
+                        <div class="field is-grouped is-grouped-centered-mobile">
+                          <div class="control">
                             <%= link_to "Modifier", edit_event_path(event),
                                 class: "button is-small is-light" %>
+                          </div>
+                          <div class="control">
                             <%= link_to "Participants", event_participants_path(event),
                                 class: "button is-small is-primary" %>
                           </div>
-                        <% end %>
-                      </div>
+                        </div>
+                      <% end %>
                     </div>
                   </div>
                 </div>
@@ -111,7 +189,7 @@
                 <span class="icon is-large has-text-grey-light mb-4">
                   <i class="fas fa-calendar-plus fa-3x"></i>
                 </span>
-                <h3 class="title is-5 has-text-grey">
+                <h3 class="title is-5 has-text-grey mb-4">
                   <%= current_user == @user ? "Vous n'avez" : "#{@user.first_name} n'a" %>
                   créé aucun événement
                 </h3>
@@ -131,8 +209,18 @@
         <div class="card">
           <header class="card-header">
             <div class="card-header-title">
-              <span class="title is-5">Participations</span>
-              <span class="tag is-info ml-2"><%= @user.attendances.count %></span>
+              <div class="is-flex is-justify-content-space-between is-align-items-center" style="width: 100%;">
+                <!-- Zone gauche vide pour équilibrer -->
+                <div style="width: 3rem;"></div>
+
+                <!-- Contenu centré (titre) -->
+                <div class="has-text-centered">
+                  <span class="title is-5">Participations</span>
+                </div>
+
+                <!-- Compteur à droite -->
+                <span class="tag is-info"><%= @user.attendances.count %></span>
+              </div>
             </div>
           </header>
 
@@ -140,46 +228,52 @@
             <% if @user.attendances.any? %>
               <% @user.attendances.includes(:event).each do |attendance| %>
                 <% event = attendance.event %>
-                <div class="box">
-                  <div class="level">
-                    <div class="level-left">
-                      <div>
-                        <h4 class="title is-5 mb-2">
-                          <%= link_to event.title, event_path(event),
-                              class: "has-text-primary" %>
-                        </h4>
-                        <div class="tags">
-                          <span class="tag is-info is-light">
-                            <span class="icon is-small">
-                              <i class="fas fa-calendar"></i>
-                            </span>
-                            <span><%= event.start_date.strftime("%d %b %Y") %></span>
+                <div class="box mb-4">
+                  <!-- Structure responsive similaire -->
+                  <div class="is-flex is-flex-direction-column-mobile is-flex-direction-row-tablet is-justify-content-space-between">
+
+                    <div class="is-flex-grow-1 mb-3-mobile mb-0-tablet mr-4-tablet">
+                      <h4 class="title is-5 mb-3">
+                        <%= link_to event.title, event_path(event),
+                            class: "has-text-primary" %>
+                      </h4>
+
+                      <div class="tags are-small">
+                        <!-- Statut de participation -->
+                        <span class="tag <%= attendance.status_badge_class %>">
+                          <span><%= attendance.status_text %></span>
+                        </span>
+
+                        <span class="tag is-info is-light">
+                          <span class="icon is-small">
+                            <i class="fas fa-calendar"></i>
                           </span>
-                          <span class="tag is-light">
-                            <span class="icon is-small">
-                              <i class="fas fa-map-marker-alt"></i>
-                            </span>
-                            <span><%= event.location %></span>
+                          <span><%= event.start_date.strftime("%d %b %Y") %></span>
+                        </span>
+
+                        <span class="tag is-light">
+                          <span class="icon is-small">
+                            <i class="fas fa-map-marker-alt"></i>
                           </span>
-                          <span class="tag is-warning is-light">
-                            <span class="icon is-small">
-                              <i class="fas fa-user"></i>
-                            </span>
-                            <span>par <%= event.user.first_name %></span>
+                          <span><%= truncate(event.location, length: 20) %></span>
+                        </span>
+
+                        <span class="tag is-warning is-light">
+                          <span class="icon is-small">
+                            <i class="fas fa-user"></i>
                           </span>
-                        </div>
+                          <span>par <%= event.user.first_name %></span>
+                        </span>
                       </div>
                     </div>
 
-                    <div class="level-right">
-                      <div class="has-text-right">
-                        <div class="title is-5 has-text-success mb-1">
-                          <%= event.price %>€
-                        </div>
-                        <p class="is-size-7 has-text-grey">
-                          Inscrit le <%= attendance.created_at.strftime("%d/%m/%Y") %>
-                        </p>
+                    <div class="is-flex is-flex-direction-column is-align-items-center-mobile is-align-items-end-tablet">
+                      <div class="title is-5 has-text-success mb-1">
+                        <%= event.price %>€
                       </div>
+                      <p class="is-size-7 has-text-grey">
+                        Inscrit le <%= attendance.created_at.strftime("%d/%m/%Y") %>
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -189,7 +283,7 @@
                 <span class="icon is-large has-text-grey-light mb-4">
                   <i class="fas fa-ticket-alt fa-3x"></i>
                 </span>
-                <h3 class="title is-5 has-text-grey">
+                <h3 class="title is-5 has-text-grey mb-4">
                   <%= current_user == @user ? "Vous ne participez" : "#{@user.first_name} ne participe" %>
                   à aucun événement
                 </h3>
@@ -206,8 +300,8 @@
         </div>
       </div>
 
-      <!-- Sidebar -->
-      <div class="column is-4">
+      <!-- Sidebar avec meilleure gestion responsive -->
+      <div class="column is-4-desktop is-12-tablet">
         <!-- User Stats -->
         <div class="card mb-6">
           <header class="card-header">
@@ -216,7 +310,7 @@
             </div>
           </header>
           <div class="card-content has-text-centered">
-            <div class="columns">
+            <div class="columns is-mobile">
               <div class="column">
                 <div class="title is-3 has-text-primary mb-1">
                   <%= @user.events.count %>
@@ -240,7 +334,7 @@
 
             <div>
               <div class="title is-3 has-text-success mb-1">
-                <%= @user.events.joins(:participants).distinct.count %>
+                <%= @user.events.joins(:confirmed_participants).distinct.count %>
               </div>
               <div class="is-size-7 has-text-grey">
                 Personnes touchées
@@ -258,7 +352,7 @@
               </div>
             </header>
             <div class="card-content">
-              <div class="buttons">
+              <div class="buttons is-flex is-flex-direction-column">
                 <%= link_to new_event_path, class: "button is-primary is-fullwidth mb-3" do %>
                   <span class="icon">
                     <i class="fas fa-plus"></i>
@@ -273,11 +367,21 @@
                   <span>Découvrir des événements</span>
                 <% end %>
 
-                <%= link_to edit_user_path(@user), class: "button is-light is-fullwidth" do %>
+                <%= link_to edit_user_path(@user), class: "button is-light is-fullwidth mb-3" do %>
                   <span class="icon">
                     <i class="fas fa-edit"></i>
                   </span>
                   <span>Modifier mon profil</span>
+                <% end %>
+
+                <!-- BOUTON ADMIN dans la sidebar -->
+                <% if current_user.admin? %>
+                  <%= link_to admin_root_path, class: "button is-danger is-fullwidth" do %>
+                    <span class="icon">
+                      <i class="fas fa-shield-alt"></i>
+                    </span>
+                    <span>Zone d'administration</span>
+                  <% end %>
                 <% end %>
               </div>
             </div>
@@ -292,31 +396,46 @@
             </div>
           </header>
           <div class="card-content">
-            <div class="field">
+            <div class="field mb-4">
               <div class="is-flex is-align-items-center">
                 <span class="icon has-text-grey mr-3">
                   <i class="fas fa-envelope"></i>
                 </span>
                 <div>
                   <div class="is-size-7 has-text-weight-semibold">Email</div>
-                  <div class="is-size-7"><%= @user.email %></div>
+                  <div class="is-size-7 has-text-grey"><%= @user.email %></div>
                 </div>
               </div>
             </div>
 
-            <div class="field">
+            <div class="field mb-4">
               <div class="is-flex is-align-items-center">
                 <span class="icon has-text-grey mr-3">
                   <i class="fas fa-calendar-check"></i>
                 </span>
                 <div>
                   <div class="is-size-7 has-text-weight-semibold">Membre depuis</div>
-                  <div class="is-size-7">
+                  <div class="is-size-7 has-text-grey">
                     <%= @user.created_at.strftime("%B %Y") %>
                   </div>
                 </div>
               </div>
             </div>
+
+            <!-- INFO ADMIN dans contact -->
+            <% if @user.admin? %>
+              <div class="field">
+                <div class="is-flex is-align-items-center">
+                  <span class="icon has-text-danger mr-3">
+                    <i class="fas fa-crown"></i>
+                  </span>
+                  <div>
+                    <div class="is-size-7 has-text-weight-semibold has-text-danger">Statut</div>
+                    <div class="is-size-7 has-text-danger">Administrateur</div>
+                  </div>
+                </div>
+              </div>
+            <% end %>
           </div>
         </div>
       </div>

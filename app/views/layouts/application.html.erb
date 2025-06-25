@@ -11,7 +11,7 @@
 
     <!-- CSS personnalisé Eventbrite -->
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    <%= javascript_importmap_tags %>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload" %>
 
     <!-- Font Awesome pour les icônes -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -76,15 +76,31 @@
                   Mes événements
                 <% end %>
 
+                <!-- ✅ BOUTON ADMIN dans la navbar -->
+                <% if current_user.admin? %>
+                  <%= link_to admin_root_path, class: "navbar-item has-text-warning" do %>
+                    <span class="icon">
+                      <i class="fas fa-shield-alt"></i>
+                    </span>
+                    Administration
+                  <% end %>
+                <% end %>
+
                 <hr class="navbar-divider">
 
-                <%= link_to destroy_user_session_path, method: :delete,
-                    class: "navbar-item has-text-danger" do %>
-                  <span class="icon">
-                    <i class="fas fa-sign-out-alt"></i>
-                  </span>
-                  Déconnexion
-                <% end %>
+                <!-- ✅ DÉCONNEXION CORRIGÉE avec button_to -->
+                <div class="navbar-item" style="padding: 0;">
+                  <%= button_to destroy_user_session_path,
+                      method: :delete,
+                      class: "button is-white is-fullwidth has-text-danger",
+                      style: "border: none; justify-content: flex-start; border-radius: 0; padding: 0.5rem 1rem;",
+                      data: { confirm: "Êtes-vous sûr de vouloir vous déconnecter ?" } do %>
+                    <span class="icon">
+                      <i class="fas fa-sign-out-alt"></i>
+                    </span>
+                    <span>Déconnexion</span>
+                  <% end %>
+                </div>
               </div>
             </div>
           <% else %>

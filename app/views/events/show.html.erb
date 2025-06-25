@@ -27,11 +27,15 @@
             </span>
             <span><%= @event.start_date.strftime("%d %B %Y") %></span>
           </span>
+          <!-- ✅ CORRIGÉ : Calcul de l'heure de fin basé sur la durée -->
           <span class="tag is-info is-large">
             <span class="icon">
               <i class="fas fa-clock"></i>
             </span>
-            <span><%= @event.start_date.strftime("%H:%M") %> - <%= @event.end_date.strftime("%H:%M") %></span>
+            <span>
+              <%= @event.start_date.strftime("%H:%M") %> -
+              <%= (@event.start_date + @event.duration.minutes).strftime("%H:%M") %>
+            </span>
           </span>
           <span class="tag is-success is-large">
             <span class="icon">
@@ -61,7 +65,8 @@
                   <i class="fas fa-users"></i>
                 </span>
                 <span class="has-text-grey-dark is-size-5">
-                  <%= @event.participants_count %> participant<%= 's' if @event.participants_count > 1 %>
+                  <!-- ✅ CORRIGÉ : Utiliser la bonne méthode -->
+                  <%= @event.confirmed_participants_count %> participant<%= 's' if @event.confirmed_participants_count > 1 %>
                 </span>
               </span>
             </div>
@@ -100,32 +105,65 @@
                 <% end %>
               </div>
 
-            <% elsif @event.participants.include?(current_user) %>
-              <!-- Utilisateur déjà inscrit -->
-              <div class="notification is-success is-light mb-4">
-                <span class="icon">
-                  <i class="fas fa-check-circle"></i>
-                </span>
-                <span>Vous êtes inscrit !</span>
-              </div>
-
-              <%= button_to event_attendances_path(@event), method: :delete,
-                  class: "button is-danger is-fullwidth",
-                  data: { confirm: "Êtes-vous sûr de vouloir annuler votre participation ?" } do %>
-                <span class="icon">
-                  <i class="fas fa-times"></i>
-                </span>
-                <span>Annuler ma participation</span>
-              <% end %>
-
             <% else %>
-              <!-- Utilisateur peut s'inscrire -->
-              <%= button_to event_attendances_path(@event), method: :post,
-                  class: "button is-primary is-large is-fullwidth" do %>
-                <span class="icon">
-                  <i class="fas fa-ticket-alt"></i>
-                </span>
-                <span>Participer à l'événement</span>
+              <!-- ✅ CORRIGÉ : Vérifier l'inscription avec le modèle Attendance -->
+              <% user_attendance = current_user.attendances.find_by(event: @event) %>
+
+              <% if user_attendance %>
+                <!-- Utilisateur déjà inscrit -->
+                <div class="notification is-success is-light mb-4">
+                  <span class="icon">
+                    <i class="fas fa-check-circle"></i>
+                  </span>
+                  <span>Vous êtes inscrit !</span>
+                  <br>
+                  <small>Statut : <%= user_attendance.status_text %></small>
+                </div>
+
+                <!-- Permettre l'annulation seulement si confirmé -->
+                <% if user_attendance.confirmed? %>
+                  <%= button_to event_attendances_path(@event), method: :delete,
+                      class: "button is-danger is-fullwidth",
+                      data: { confirm: "Êtes-vous sûr de vouloir annuler votre participation ?" } do %>
+                    <span class="icon">
+                      <i class="fas fa-times"></i>
+                    </span>
+                    <span>Annuler ma participation</span>
+                  <% end %>
+                <% elsif user_attendance.pending? %>
+                  <div class="notification is-warning is-light">
+                    <span class="icon">
+                      <i class="fas fa-clock"></i>
+                    </span>
+                    <span>Paiement en attente</span>
+                  </div>
+                <% end %>
+
+              <% else %>
+                <!-- Utilisateur peut s'inscrire -->
+                <% if @event.price > 0 %>
+                  <!-- Événement payant - Redirection vers Stripe -->
+                  <%= link_to new_event_payment_path(@event),
+                      class: "button is-primary is-large is-fullwidth" do %>
+                    <span>Payer et participer - <%= @event.price %>€</span>
+                  <% end %>
+
+                  <p class="help has-text-centered mt-2">
+                    <span class="icon">
+                      <i class="fas fa-shield-alt"></i>
+                    </span>
+                    Paiement sécurisé par Stripe
+                  </p>
+                <% else %>
+                  <!-- Événement gratuit -->
+                  <%= button_to event_attendances_path(@event), method: :post,
+                      class: "button is-success is-large is-fullwidth" do %>
+                    <span class="icon">
+                      <i class="fas fa-check"></i>
+                    </span>
+                    <span>Participer gratuitement</span>
+                  <% end %>
+                <% end %>
               <% end %>
             <% end %>
           <% else %>
@@ -218,6 +256,19 @@
               </div>
             </div>
 
+            <!-- ✅ AJOUTÉ : Heure de fin calculée -->
+            <div class="field">
+              <label class="label">Heure de fin</label>
+              <div class="control">
+                <span class="tag is-success is-large">
+                  <span class="icon">
+                    <i class="fas fa-flag-checkered"></i>
+                  </span>
+                  <span><%= (@event.start_date + @event.duration.minutes).strftime("%H:%M") %></span>
+                </span>
+              </div>
+            </div>
+
             <div class="field">
               <label class="label">Lieu</label>
               <div class="control">
@@ -279,12 +330,14 @@
               <span class="icon">
                 <i class="fas fa-users"></i>
               </span>
-              Participants (<%= @event.participants_count %>)
+              <!-- ✅ CORRIGÉ : Utiliser la bonne méthode -->
+              Participants (<%= @event.confirmed_participants_count %>)
             </p>
           </header>
           <div class="card-content">
-            <% if @event.participants.any? %>
-              <% @event.participants.limit(5).each do |participant| %>
+            <!-- ✅ CORRIGÉ : Utiliser confirmed_participants au lieu de participants -->
+            <% if @event.confirmed_participants.any? %>
+              <% @event.confirmed_participants.limit(5).each do |participant| %>
                 <div class="media">
                   <div class="media-left">
                     <figure class="image is-32x32">
@@ -301,9 +354,9 @@
                 </div>
               <% end %>
 
-              <% if @event.participants_count > 5 %>
+              <% if @event.confirmed_participants_count > 5 %>
                 <p class="has-text-grey mt-3">
-                  et <%= @event.participants_count - 5 %> autre<%= 's' if @event.participants_count - 5 > 1 %>...
+                  et <%= @event.confirmed_participants_count - 5 %> autre<%= 's' if @event.confirmed_participants_count - 5 > 1 %>...
                 </p>
               <% end %>
 
@@ -319,6 +372,52 @@
                 </p>
               <% end %>
             <% end %>
+          </div>
+        </div>
+
+        <!-- ✅ AJOUTÉ : Statistiques de l'événement -->
+        <div class="card mt-5">
+          <header class="card-header">
+            <p class="card-header-title">
+              <span class="icon">
+                <i class="fas fa-chart-bar"></i>
+              </span>
+              Statistiques
+            </p>
+          </header>
+          <div class="card-content">
+            <div class="columns is-mobile has-text-centered">
+              <div class="column">
+                <div class="title is-4 has-text-success">
+                  <%= @event.confirmed_participants_count %>
+                </div>
+                <div class="is-size-7 has-text-grey">
+                  Confirmés
+                </div>
+              </div>
+
+              <% if @event.pending_participants_count > 0 %>
+                <div class="column">
+                  <div class="title is-4 has-text-warning">
+                    <%= @event.pending_participants_count %>
+                  </div>
+                  <div class="is-size-7 has-text-grey">
+                    En attente
+                  </div>
+                </div>
+              <% end %>
+
+              <% if @event.price > 0 %>
+                <div class="column">
+                  <div class="title is-4 has-text-info">
+                    <%= number_with_precision(@event.total_revenue, precision: 0) %>€
+                  </div>
+                  <div class="is-size-7 has-text-grey">
+                    Revenus
+                  </div>
+                </div>
+              <% end %>
+            </div>
           </div>
         </div>
 
@@ -340,6 +439,13 @@
                     <i class="fas fa-edit"></i>
                   </span>
                   <span>Modifier l'événement</span>
+                <% end %>
+
+                <%= link_to event_participants_path(@event), class: "button is-info is-fullwidth mb-2" do %>
+                  <span class="icon">
+                    <i class="fas fa-list"></i>
+                  </span>
+                  <span>Liste des participants</span>
                 <% end %>
 
                 <%= button_to event_path(@event), method: :delete,

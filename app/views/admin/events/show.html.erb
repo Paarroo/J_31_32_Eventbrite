@@ -1,0 +1,277 @@
+<div class="container">
+  <div class="mb-6">
+    <%= link_to admin_events_path, class: "button is-light" do %>
+      <span class="icon">
+        <i class="fas fa-arrow-left"></i>
+      </span>
+      <span>Retour à la liste</span>
+    <% end %>
+  </div>
+
+  <!-- Header événement -->
+  <div class="card mb-6">
+    <div class="card-content">
+      <div class="level">
+        <div class="level-left">
+          <div>
+            <h1 class="title is-3 mb-2"><%= @event.title %></h1>
+            <p class="subtitle is-5 has-text-grey">
+              Organisé par <%= link_to @event.user.full_name, admin_user_path(@event.user), class: "has-text-primary" %>
+            </p>
+
+            <div class="tags are-medium">
+              <!-- Statut de validation -->
+              <% if @event.validated? %>
+                <span class="tag is-success is-medium">
+                  <span class="icon">
+                    <i class="fas fa-check"></i>
+                  </span>
+                  <span>Validé</span>
+                </span>
+              <% elsif @event.rejected? %>
+                <span class="tag is-danger is-medium">
+                  <span class="icon">
+                    <i class="fas fa-times"></i>
+                  </span>
+                  <span>Refusé</span>
+                </span>
+              <% else %>
+                <span class="tag is-warning is-medium">
+                  <span class="icon">
+                    <i class="fas fa-clock"></i>
+                  </span>
+                  <span>En attente</span>
+                </span>
+              <% end %>
+
+              <!-- Date -->
+              <span class="tag is-info is-medium">
+                <span class="icon">
+                  <i class="fas fa-calendar"></i>
+                </span>
+                <span><%= @event.start_date.strftime("%d %b %Y") %></span>
+              </span>
+
+              <!-- Prix -->
+              <span class="tag is-success is-medium">
+                <span class="icon">
+                  <i class="fas fa-euro-sign"></i>
+                </span>
+                <span><%= @event.price %>€</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="level-right">
+          <div class="buttons">
+            <%= link_to edit_admin_event_path(@event), class: "button is-warning" do %>
+              <span class="icon">
+                <i class="fas fa-edit"></i>
+              </span>
+              <span>Modifier</span>
+            <% end %>
+
+            <% if @event.pending? %>
+              <%= link_to edit_admin_event_submission_path(@event), class: "button is-success" do %>
+                <span class="icon">
+                  <i class="fas fa-check"></i>
+                </span>
+                <span>Valider</span>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="columns">
+    <!-- Colonne gauche: Statistiques -->
+    <div class="column is-4">
+      <!-- Statistiques -->
+      <div class="card mb-6">
+        <header class="card-header">
+          <div class="card-header-title">
+            <span class="icon mr-2">
+              <i class="fas fa-chart-bar"></i>
+            </span>
+            Statistiques
+          </div>
+        </header>
+        <div class="card-content">
+          <div class="field">
+            <label class="label">Participants confirmés</label>
+            <p class="title is-3 has-text-success"><%= @stats[:confirmed_count] %></p>
+          </div>
+
+          <div class="field">
+            <label class="label">Participants en attente</label>
+            <p class="title is-4 has-text-warning"><%= @stats[:pending_count] %></p>
+          </div>
+
+          <div class="field">
+            <label class="label">Total participations</label>
+            <p class="title is-4 has-text-info"><%= @stats[:total_attendances] %></p>
+          </div>
+
+          <div class="field">
+            <label class="label">Revenus générés</label>
+            <p class="title is-4 has-text-primary"><%= @stats[:revenue] %>€</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Informations événement -->
+      <div class="card">
+        <header class="card-header">
+          <div class="card-header-title">
+            <span class="icon mr-2">
+              <i class="fas fa-info-circle"></i>
+            </span>
+            Détails
+          </div>
+        </header>
+        <div class="card-content">
+          <div class="field">
+            <label class="label">📅 Date et heure</label>
+            <p><%= @event.start_date.strftime("%A %d %B %Y à %H:%M") %></p>
+          </div>
+
+          <div class="field">
+            <label class="label">⏱️ Durée</label>
+            <p><%= @event.duration %> minutes</p>
+          </div>
+
+          <div class="field">
+            <label class="label">📍 Lieu</label>
+            <p><%= @event.location %></p>
+          </div>
+
+          <div class="field">
+            <label class="label">💰 Prix</label>
+            <p><%= @event.price %>€</p>
+          </div>
+
+          <div class="field">
+            <label class="label">📝 Créé le</label>
+            <p><%= @event.created_at.strftime("%d/%m/%Y à %H:%M") %></p>
+          </div>
+
+          <% if @event.validated_at %>
+            <div class="field">
+              <label class="label">✅ Validé le</label>
+              <p><%= @event.validated_at.strftime("%d/%m/%Y à %H:%M") %></p>
+              <% if @event.validated_by %>
+                <p class="is-size-7 has-text-grey">par <%= @event.validated_by.full_name %></p>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Colonne droite: Description et participants -->
+    <div class="column is-8">
+      <!-- Description -->
+      <div class="card mb-6">
+        <header class="card-header">
+          <div class="card-header-title">
+            <span class="icon mr-2">
+              <i class="fas fa-align-left"></i>
+            </span>
+            Description complète
+          </div>
+        </header>
+        <div class="card-content">
+          <div class="content">
+            <%= simple_format(@event.description) %>
+          </div>
+
+          <% if @event.admin_comment.present? %>
+            <div class="notification is-warning is-light">
+              <p class="title is-6">💬 Commentaire administrateur</p>
+              <p><%= simple_format(@event.admin_comment) %></p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Participants confirmés -->
+      <div class="card mb-6">
+        <header class="card-header">
+          <div class="card-header-title">
+            <span class="icon mr-2">
+              <i class="fas fa-users"></i>
+            </span>
+            Participants confirmés (<%= @confirmed_participants.count %>)
+          </div>
+        </header>
+        <div class="card-content">
+          <% if @confirmed_participants.any? %>
+            <% @confirmed_participants.each do |participant| %>
+              <div class="media">
+                <div class="media-left">
+                  <figure class="image is-32x32">
+                    <span class="has-background-success has-text-white is-flex is-align-items-center is-justify-content-center"
+                          style="width: 32px; height: 32px; border-radius: 50%; font-size: 12px; font-weight: bold;">
+                      <%= participant.first_name&.first&.upcase || "U" %>
+                    </span>
+                  </figure>
+                </div>
+                <div class="media-content">
+                  <div class="content">
+                    <p>
+                      <strong><%= link_to participant.full_name, admin_user_path(participant), class: "has-text-success" %></strong>
+                      <br>
+                      <small class="has-text-grey"><%= participant.email %></small>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          <% else %>
+            <p class="has-text-grey">Aucun participant confirmé</p>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Participants en attente -->
+      <% if @pending_participants.any? %>
+        <div class="card">
+          <header class="card-header">
+            <div class="card-header-title">
+              <span class="icon mr-2">
+                <i class="fas fa-clock"></i>
+              </span>
+              Participants en attente (<%= @pending_participants.count %>)
+            </div>
+          </header>
+          <div class="card-content">
+            <% @pending_participants.each do |participant| %>
+              <div class="media">
+                <div class="media-left">
+                  <figure class="image is-32x32">
+                    <span class="has-background-warning has-text-white is-flex is-align-items-center is-justify-content-center"
+                          style="width: 32px; height: 32px; border-radius: 50%; font-size: 12px; font-weight: bold;">
+                      <%= participant.first_name&.first&.upcase || "U" %>
+                    </span>
+                  </figure>
+                </div>
+                <div class="media-content">
+                  <div class="content">
+                    <p>
+                      <strong><%= link_to participant.full_name, admin_user_path(participant), class: "has-text-warning" %></strong>
+                      <br>
+                      <small class="has-text-grey"><%= participant.email %></small>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

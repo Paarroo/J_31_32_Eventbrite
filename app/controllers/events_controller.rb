@@ -1,41 +1,38 @@
 # app/controllers/events_controller.rb
 class EventsController < ApplicationController
-  before_action :set_event, only: %i[show edit update destroy]
-  before_action :authenticate_user!, except: [ :index, :show, :home ]
-  before_action :check_owner, only: [ :edit, :update, :destroy ]
+  before_action :authenticate_user!, except: [ :home, :index, :show ]
+  before_action :set_event, only: [ :show, :edit, :update, :destroy, :participants ]
 
   # GET / (page d'accueil)
   def home
-    # Rien à charger pour la page d'accueil, juste les stats
+    @stats = {
+      events_count: Event.validated.count,
+      users_count: User.count,
+      # ✅ CORRIGÉ : Utiliser le bon scope
+      attendances_count: Attendance.where(payment_status: [ 'succeeded', 'free' ]).count
+    }
   end
 
-  # GET /events (liste des événements)
+  # GET /events (liste des événements VALIDÉS seulement)
   def index
-    if params[:user_id]
-      # Si on veut voir les événements d'un utilisateur spécifique
-      @user = User.find(params[:user_id])
-      @events = @user.events.includes(:user, :participants).order(start_date: :asc)
-      @title = "Événements de #{@user.first_name}"
-    else
-      # Tous les événements
-      @events = Event.includes(:user, :participants).order(start_date: :asc)
-      @title = "Tous les événements"
-    end
+    @events = Event.validated
+                  .upcoming
+                  .includes(:user, :confirmed_attendances)
+                  .order(:start_date)
   end
 
-  # GET /my_events
-  def my_events
-    @events = current_user.events.includes(:user, :participants).order(start_date: :asc)
-    @title = "Mes événements"
-    @user = current_user
-    render :index
-  end
-
-  # GET /events/1
+  # GET /events/:id
   def show
-    @attendance = Attendance.new
-    @is_participant = user_signed_in? && @event.participants.include?(current_user)
-    @is_owner = user_signed_in? && @event.user == current_user
+    # Vérifier que l'événement est validé (sauf pour le propriétaire et les admins)
+    unless @event.validated? || @event.user == current_user || current_user&.admin?
+      redirect_to events_path, alert: "Cet événement n'est pas encore validé."
+      return
+    end
+
+
+    @confirmed_participants = @event.confirmed_participants
+    @pending_participants = @event.pending_participants
+    @user_attendance = current_user&.attendances&.find_by(event: @event)
   end
 
   # GET /events/new
@@ -43,56 +40,79 @@ class EventsController < ApplicationController
     @event = current_user.events.build
   end
 
-  # GET /events/1/edit
-  def edit
-  end
-
   # POST /events
   def create
     @event = current_user.events.build(event_params)
 
     if @event.save
-      redirect_to @event, notice: 'Événement créé avec succès !'
+      redirect_to @event, notice: 'Événement créé avec succès. Il sera visible après validation par un administrateur.'
     else
       render :new, status: :unprocessable_entity
     end
   end
 
-  # PATCH/PUT /events/1
+  # GET /events/:id/edit
+  def edit
+    # Seul le créateur peut modifier (avant validation)
+    unless @event.user == current_user
+      redirect_to @event, alert: "Vous ne pouvez pas modifier cet événement."
+    end
+  end
+
+  # PATCH/PUT /events/:id
   def update
+    unless @event.user == current_user
+      redirect_to @event, alert: "Vous ne pouvez pas modifier cet événement."
+      return
+    end
+
     if @event.update(event_params)
-      redirect_to @event, notice: 'Événement mis à jour avec succès !'
+      redirect_to @event, notice: 'Événement mis à jour avec succès.'
     else
       render :edit, status: :unprocessable_entity
     end
   end
 
-  # DELETE /events/1
+  # DELETE /events/:id
   def destroy
+    unless @event.user == current_user || current_user&.admin?
+      redirect_to events_path, alert: "Vous ne pouvez pas supprimer cet événement."
+      return
+    end
+
     @event.destroy
-    redirect_to events_url, notice: 'Événement supprimé avec succès !'
+    redirect_to events_path, notice: 'Événement supprimé avec succès.'
   end
 
-  # GET /events/1/participants (pour le propriétaire de l'événement)
+  # GET /my_events
+  def my_events
+    @created_events = current_user.events.order(created_at: :desc)
+    @attended_events = current_user.attendances
+                                  .joins(:event)
+                                  .where(payment_status: [ 'succeeded', 'free' ])
+                                  .includes(:event)
+                                  .order('events.start_date DESC')
+  end
+
+  # GET /events/:id/participants
   def participants
-    unless @event.user == current_user
+    # Seul l'organisateur et les admins peuvent voir la liste complète
+    unless @event.user == current_user || current_user&.admin?
       redirect_to @event, alert: "Accès non autorisé."
       return
     end
 
-    @participants = @event.participants.includes(:attendances)
+
+    @confirmed_attendances = @event.confirmed_attendances.includes(:user)
+    @pending_attendances = @event.pending_attendances.includes(:user)
   end
 
   private
 
   def set_event
     @event = Event.find(params[:id])
-  end
-
-  def check_owner
-    unless @event.user == current_user
-      redirect_to events_path, alert: "Vous n'êtes pas autorisé à modifier cet événement."
-    end
+  rescue ActiveRecord::RecordNotFound
+    redirect_to events_path, alert: "Événement introuvable."
   end
 
   def event_params

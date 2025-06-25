@@ -1,0 +1,357 @@
+<!-- app/views/events/my_events.html.erb -->
+
+<!-- Breadcrumb -->
+<section class="section is-small">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="breadcrumbs">
+      <ul>
+        <li><%= link_to "Accueil", root_path %></li>
+        <li class="is-active"><a href="#" aria-current="page">Mes événements</a></li>
+      </ul>
+    </nav>
+  </div>
+</section>
+
+<!-- Page Header -->
+<section class="section">
+  <div class="container">
+    <div class="level">
+      <div class="level-left">
+        <div class="level-item">
+          <div>
+            <h1 class="title is-2 mb-5">
+              <span class="icon mr-2 has-text-primary">
+                <i class="fas fa-calendar-alt"></i>
+              </span>
+              Mes événements
+            </h1>
+            <p class="subtitle">
+              Gérez vos événements créés et consultez vos participations
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="level-right">
+        <div class="level-item">
+          <%= link_to new_event_path, class: "button is-primary is-medium" do %>
+            <span class="icon">
+              <i class="fas fa-plus"></i>
+            </span>
+            <span>Créer un événement</span>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Main Content -->
+<section class="section">
+  <div class="container">
+    <div class="columns">
+
+      <!-- Événements créés -->
+      <div class="column is-6">
+        <div class="card">
+          <header class="card-header">
+            <div class="card-header-title is-flex is-align-items-center is-justify-content-center" style="width: 100%; position: relative;">
+             <span class="icon mr-2 has-text-primary">
+               <i class="fas fa-calendar-plus"></i>
+             </span>
+             <span class="title is-5 mb-0">Événements que j'organise</span>
+             <span class="tag is-primary" style="position: absolute; right: 1rem;"><%= @created_events.count %></span>
+            </div>
+          </header>
+
+          <div class="card-content">
+            <% if @created_events.any? %>
+              <% @created_events.each do |event| %>
+                <div class="box">
+                  <div class="level">
+                    <div class="level-left">
+                      <div>
+                        <h4 class="title is-5 mb-2">
+                          <%= link_to event.title, event_path(event), class: "has-text-primary" %>
+                        </h4>
+
+                        <div class="tags mb-2">
+                          <!-- Statut de validation -->
+                          <% if event.validated? %>
+                            <span class="tag is-success">
+                              <span class="icon">
+                                <i class="fas fa-check"></i>
+                              </span>
+                              <span>Validé</span>
+                            </span>
+                          <% elsif event.rejected? %>
+                            <span class="tag is-danger">
+                              <span class="icon">
+                                <i class="fas fa-times"></i>
+                              </span>
+                              <span>Refusé</span>
+                            </span>
+                          <% else %>
+                            <span class="tag is-warning">
+                              <span class="icon">
+                                <i class="fas fa-clock"></i>
+                              </span>
+                              <span>En attente</span>
+                            </span>
+                          <% end %>
+
+                          <!-- Date -->
+                          <span class="tag is-info is-light">
+                            <span class="icon">
+                              <i class="fas fa-calendar"></i>
+                            </span>
+                            <span><%= event.start_date.strftime("%d %b %Y") %></span>
+                          </span>
+
+                          <!-- Participants -->
+                          <span class="tag is-success is-light">
+                            <span class="icon">
+                              <i class="fas fa-users"></i>
+                            </span>
+                            <span><%= event.confirmed_participants_count %></span>
+                          </span>
+                        </div>
+
+                        <p class="has-text-grey is-size-7">
+                          <%= truncate(event.description, length: 80) %>
+                        </p>
+                      </div>
+                    </div>
+
+                    <div class="level-right">
+                      <div class="buttons">
+                        <%= link_to event_path(event), class: "button is-info is-small" do %>
+                          <span class="icon">
+                            <i class="fas fa-eye"></i>
+                          </span>
+                          <span>Voir</span>
+                        <% end %>
+
+                        <% if event.can_be_edited_by?(current_user) %>
+                          <%= link_to edit_event_path(event), class: "button is-warning is-small" do %>
+                            <span class="icon">
+                              <i class="fas fa-edit"></i>
+                            </span>
+                            <span>Modifier</span>
+                          <% end %>
+                        <% end %>
+
+                        <% if event.validated? %>
+                          <%= link_to event_participants_path(event), class: "button is-primary is-small" do %>
+                            <span class="icon">
+                              <i class="fas fa-list"></i>
+                            </span>
+                            <span>Participants</span>
+                          <% end %>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            <% else %>
+              <!-- Empty state pour événements créés -->
+              <div class="has-text-centered py-6">
+                <span class="icon is-large has-text-grey-light mb-4">
+                  <i class="fas fa-calendar-plus fa-3x"></i>
+                </span>
+                <h3 class="title is-5 has-text-grey">Vous n'avez créé aucun événement</h3>
+                <p class="subtitle has-text-grey mb-4">
+                  Commencez à organiser des événements passionnants !
+                </p>
+                <%= link_to "Créer mon premier événement", new_event_path,
+                    class: "button is-primary" %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Événements auxquels je participe -->
+      <div class="column is-6">
+        <div class="card">
+          <header class="card-header">
+            <div class="card-header-title is-flex is-align-items-center is-justify-content-center" style="width: 100%; position: relative;">
+              <span class="icon mr-2 has-text-info">
+                <i class="fas fa-ticket-alt"></i>
+              </span>
+              <span class="title is-5 mb-0">Événements auxquels je participe</span>
+              <span class="tag is-info" style="position: absolute; right: 1rem;"><%= @attended_events.count %></span>
+            </div>
+          </header>
+          <div class="card-content">
+            <% if @attended_events.any? %>
+              <% @attended_events.each do |attendance| %>
+                <% event = attendance.event %>
+                <div class="box">
+                  <div class="level">
+                    <div class="level-left">
+                      <div>
+                        <h4 class="title is-5 mb-2">
+                          <%= link_to event.title, event_path(event), class: "has-text-info" %>
+                        </h4>
+
+                        <div class="tags mb-2">
+                          <!-- Statut de participation -->
+                          <span class="tag <%= attendance.status_badge_class %>">
+                            <span><%= attendance.status_text %></span>
+                          </span>
+
+                          <!-- Date -->
+                          <span class="tag is-info is-light">
+                            <span class="icon">
+                              <i class="fas fa-calendar"></i>
+                            </span>
+                            <span><%= event.start_date.strftime("%d %b %Y") %></span>
+                          </span>
+
+                          <!-- Prix payé -->
+                          <% if attendance.payment_succeeded? %>
+                            <span class="tag is-success is-light">
+                              <span class="icon">
+                                <i class="fas fa-euro-sign"></i>
+                              </span>
+                              <span><%= attendance.amount_paid_in_euros %>€</span>
+                            </span>
+                          <% elsif event.price == 0 %>
+                            <span class="tag is-info is-light">
+                              <span>Gratuit</span>
+                            </span>
+                          <% end %>
+                        </div>
+
+                        <p class="has-text-grey is-size-7">
+                          Organisé par <%= event.user.first_name %> <%= event.user.last_name %>
+                        </p>
+                        <p class="has-text-grey is-size-7">
+                          Inscrit le <%= attendance.created_at.strftime("%d/%m/%Y") %>
+                        </p>
+                      </div>
+                    </div>
+
+                    <div class="level-right">
+                      <div class="buttons">
+                        <%= link_to event_path(event), class: "button is-info is-small" do %>
+                          <span class="icon">
+                            <i class="fas fa-eye"></i>
+                          </span>
+                          <span>Voir</span>
+                        <% end %>
+
+                        <% if attendance.confirmed? && event.start_date > Time.current %>
+                          <%= button_to event_attendances_path(event),
+                              method: :delete,
+                              class: "button is-danger is-small",
+                              data: { confirm: "Êtes-vous sûr de vouloir annuler votre participation ?" } do %>
+                            <span class="icon">
+                              <i class="fas fa-times"></i>
+                            </span>
+                            <span>Annuler</span>
+                          <% end %>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            <% else %>
+              <!-- Empty state pour participations -->
+              <div class="has-text-centered py-6">
+                <span class="icon is-large has-text-grey-light mb-4">
+                  <i class="fas fa-ticket-alt fa-3x"></i>
+                </span>
+                <h3 class="title is-5 has-text-grey">Vous ne participez à aucun événement</h3>
+                <p class="subtitle has-text-grey mb-4">
+                  Découvrez des événements passionnants près de chez vous !
+                </p>
+                <%= link_to "Découvrir les événements", events_path,
+                    class: "button is-info" %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Statistiques personnelles -->
+    <div class="card mt-6">
+      <header class="card-header">
+        <div class="card-header-title">
+          <span class="icon mr-2 has-text-success">
+            <i class="fas fa-chart-bar"></i>
+          </span>
+          <span class="title is-5">Mes statistiques</span>
+        </div>
+      </header>
+      <div class="card-content">
+        <div class="columns has-text-centered">
+          <div class="column">
+            <div class="title is-3 has-text-primary">
+              <%= @created_events.count %>
+            </div>
+            <div class="subtitle is-6">
+              Événement<%= 's' if @created_events.count > 1 %> créé<%= 's' if @created_events.count > 1 %>
+            </div>
+          </div>
+
+          <div class="column">
+            <div class="title is-3 has-text-info">
+              <%= @attended_events.count %>
+            </div>
+            <div class="subtitle is-6">
+              Participation<%= 's' if @attended_events.count > 1 %>
+            </div>
+          </div>
+
+          <div class="column">
+            <div class="title is-3 has-text-success">
+              <%= @created_events.where(validated: true).sum { |event| event.confirmed_participants_count } %>
+            </div>
+            <div class="subtitle is-6">
+              Personnes touchées
+            </div>
+          </div>
+
+          <div class="column">
+            <div class="title is-3 has-text-warning">
+              <%= @created_events.where(validated: true).sum { |event| event.total_revenue } %>€
+            </div>
+            <div class="subtitle is-6">
+              Revenus générés
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions rapides -->
+    <div class="has-text-centered mt-6">
+      <div class="buttons is-centered">
+        <%= link_to new_event_path, class: "button is-primary is-medium" do %>
+          <span class="icon">
+            <i class="fas fa-plus"></i>
+          </span>
+          <span>Créer un nouvel événement</span>
+        <% end %>
+
+        <%= link_to events_path, class: "button is-info is-medium" do %>
+          <span class="icon">
+            <i class="fas fa-search"></i>
+          </span>
+          <span>Découvrir des événements</span>
+        <% end %>
+
+        <%= link_to user_path(current_user), class: "button is-light is-medium" do %>
+          <span class="icon">
+            <i class="fas fa-user"></i>
+          </span>
+          <span>Mon profil</span>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</section>
