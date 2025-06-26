@@ -154,3 +154,9 @@ gem 'rails-erd'
 gem 'bullet'
 gem 'annotate'  # rails g annotate:install
 gem "boot"
+
+
+group :production do
+  gem 'pg', '~> 1.1'
+  gem 'rails_12factor'
+end

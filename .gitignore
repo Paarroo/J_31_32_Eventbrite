@@ -13,6 +13,7 @@
 # Ignore all logfiles and tempfiles.
 /log/*
 /tmp/*
+*.log
 !/log/.keep
 !/tmp/.keep
 
@@ -32,3 +33,6 @@
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+
+*.log
+.DS_Store
